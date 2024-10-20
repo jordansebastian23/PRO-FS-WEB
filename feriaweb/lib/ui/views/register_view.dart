@@ -1,11 +1,10 @@
 import 'package:feriaweb/constants/colors.dart';
+import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/layouts/auth/widgets/link_text.dart';
-
-import 'package:feriaweb/router/router.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatelessWidget {
+class RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -17,6 +16,16 @@ class LoginView extends StatelessWidget {
           child: Form(
               child: Column(
             children: [
+              //Email
+              TextFormField(
+                style: TextStyle(color: Colors.white),
+                decoration: buildinputdecorator(
+                  hint: 'Ingrese su nombre',
+                  label :'Nombre',
+                  icon: Icons.supervised_user_circle_sharp,
+                ),
+              ),
+              SizedBox(height: 20),
               //Email
               TextFormField(
                 style: TextStyle(color: Colors.white),
@@ -38,21 +47,21 @@ class LoginView extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              //crear nueva cuenta
 
               //Button
               CustomOutlinedButton(onPressed: (){},
-              text: 'Ingresar',
+              text: 'Crear Cuenta',
               textColor: CustomColor.background,
               color: Colors.white,
               isFilled: true,
               ),
 
-              LinkText(
-                text: 'Crear una cuenta',
-                onPressed: () {
-                  Navigator.pushNamed(context, Flurorouter.registerRoute);
-                },
+              SizedBox(height: 20),
+
+              LinkText(text: 'Ir al login',
+              onPressed: () {
+                Navigator.pushNamed(context, Flurorouter.loginRoute);
+              },
               ),
               
             ],
