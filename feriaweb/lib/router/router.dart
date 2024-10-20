@@ -5,7 +5,7 @@ import 'package:fluro/fluro.dart';
 class Flurorouter {
   static final FluroRouter router = new FluroRouter();
 
-  static String rootRoute = '/auth/login';
+  static String rootRoute = '/';
 
   //auth routes
   static String loginRoute = '/auth/login';
@@ -16,11 +16,11 @@ class Flurorouter {
 
   static void configureRoutes() {
     //auth routes
-    router.define(loginRoute, handler: AdminHandlers.login);
-    router.define(rootRoute, handler: AdminHandlers.login);
+    router.define(loginRoute, handler: AdminHandlers.login, transitionType: TransitionType.none);
+    router.define(rootRoute, handler: AdminHandlers.login, transitionType: TransitionType.none);
+    router.define(registerRoute, handler:AdminHandlers.register, transitionType: TransitionType.none);
+
     
-    //Por hacer
-    // router.define(loginRoute, handler: handler);
 
     //404
     router.notFoundHandler = NoPageFoundHandlers.noPageFound;
