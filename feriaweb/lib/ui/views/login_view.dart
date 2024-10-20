@@ -1,5 +1,6 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
+import 'package:feriaweb/ui/inputs/custom_imputs.dart';
 import 'package:feriaweb/ui/layouts/auth/widgets/link_text.dart';
 
 import 'package:feriaweb/router/router.dart';
@@ -20,7 +21,7 @@ class LoginView extends StatelessWidget {
               //Email
               TextFormField(
                 style: TextStyle(color: Colors.white),
-                decoration: buildinputdecorator(
+                decoration: CustomImputs.loginInputStyle(
                   hint: 'Email',
                   label :'Email',
                   icon: Icons.email_outlined,
@@ -31,7 +32,7 @@ class LoginView extends StatelessWidget {
               TextFormField(
                 obscureText: true,
                 style: TextStyle(color: Colors.white),
-                decoration: buildinputdecorator(
+                decoration: CustomImputs.loginInputStyle(
                   hint: '********',
                   label :'Password',
                   icon: Icons.lock_outline,
@@ -59,29 +60,6 @@ class LoginView extends StatelessWidget {
           )),
         ),
       ),
-    );
-  }
-
-  InputDecoration buildinputdecorator({
-    required String hint,
-    required String label,
-    required IconData icon}) {
-
-
-    return InputDecoration(
-      border: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.white.withOpacity(0.3)
-        ),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.white.withOpacity(0.3)
-        ),
-      ),
-      hintText: hint,
-      labelText: label,
-      prefixIcon: Icon(icon, color: Colors.grey),
-      hintStyle: TextStyle(color: Colors.grey),
-      labelStyle: TextStyle(color: Colors.grey),
     );
   }
 }
