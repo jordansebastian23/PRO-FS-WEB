@@ -11,9 +11,15 @@ class BackgroundSitrans extends StatelessWidget {
             child: Container(
               constraints: BoxConstraints(maxWidth: 500),
               child: Center(
-                child: Image.asset('assets/icons/Logo - logiquick.png',
-                width: 427, height: 394,
-                
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  child: CircleAvatar(
+                    radius: 100,
+                    child: Image.asset('assets/icons/Logo - logiquick.png',
+                    width: 427, height: 394,
+                    
+                    ),
+                  ),
                 ),
               ),
             ),

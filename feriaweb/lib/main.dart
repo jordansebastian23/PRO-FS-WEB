@@ -17,9 +17,17 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       onGenerateRoute: Flurorouter.router.generator,
-      builder: (_, child) {
-        return AuthLayout();
+      builder: ( _ , child) {
+        
+        return AuthLayout( child: child! );
+
       },
+      //EDITAR BARRA SCROLL
+      theme: ThemeData.light().copyWith(
+        scrollbarTheme: ScrollbarThemeData().copyWith(
+          thumbColor: WidgetStateProperty.all(Colors.grey[500])
+        )
+      ),
     );
     // initialRoute: Flurorouter.rootRoute);
   }
