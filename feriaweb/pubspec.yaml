@@ -29,10 +29,13 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   cupertino_icons: ^1.0.8
+  email_validator: ^3.0.0
   fluro: ^2.0.5
   flutter:
     sdk: flutter
   google_fonts: ^6.2.1
+  provider: ^6.1.2
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_lints: ^4.0.0
@@ -65,7 +68,7 @@ flutter:
   # fonts:
   #   - family: Schyler
   #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Regular.ttfd
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
