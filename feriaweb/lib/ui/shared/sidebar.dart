@@ -35,18 +35,18 @@ class SideBar extends StatelessWidget {
                 navigateTo(Flurorouter.dashboardRoute);
               }),
           MenuItem(
-              text: 'Pagos Pendientes',
+              text: 'Pagos Realizados',
               icon: Icons.attach_money_outlined,
-              isActive: sidemenuProvider.currentPage == Flurorouter.pPendientesRoute,
+              isActive: sidemenuProvider.currentPage == Flurorouter.pRealizadosRoute,
               onPressed: () {
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
               }),
           MenuItem(
               text: 'Archivos Pendientes',
               icon: Icons.edit_document,
               isActive: false,
               onPressed: () {
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
               }),
           MenuItem(
               text: 'Historial de Tramites',
@@ -54,7 +54,7 @@ class SideBar extends StatelessWidget {
               isActive: false,
               onPressed: () {
                 //TODO: Realizar lo mismo para todos
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
               }),
           SizedBox(height: 30),
           TextSeparator(text: 'Opciones'),
@@ -63,14 +63,21 @@ class SideBar extends StatelessWidget {
               icon: Icons.notifications_outlined,
               isActive: false,
               onPressed: () {
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
+              }),
+          MenuItem(
+              text: 'Notificaciones Adm',
+              icon: Icons.notifications_outlined,
+              isActive: sidemenuProvider.currentPage == Flurorouter.notifyRouteAdm,
+              onPressed: () {
+                navigateTo(Flurorouter.notifyRouteAdm);
               }),
           MenuItem(
               text: 'Ajustes',
               icon: Icons.settings,
               isActive: false,
               onPressed: () {
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
               }),
           SizedBox(height: 50),
           TextSeparator(text: 'Exit'),
@@ -79,7 +86,7 @@ class SideBar extends StatelessWidget {
               icon: Icons.logout_outlined,
               isActive: false,
               onPressed: () {
-                navigateTo(Flurorouter.pPendientesRoute);
+                navigateTo(Flurorouter.pRealizadosRoute);
               }),
         ],
       ),

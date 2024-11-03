@@ -1,6 +1,5 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/UserCreated_datasource.dart';
-import 'package:feriaweb/datatables/payments_datasource.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +12,7 @@ class DashboardView extends StatefulWidget {
 class _DashboardViewState extends State<DashboardView> {
   bool _showCreateUserForm = false;
   bool _showEditUserForm = false;
-  bool _showSendNotificationForm = false;
+  bool _showDeleteUser = false;
   bool _showExtraContainerCreateUser = false;
 
   @override
@@ -62,9 +61,11 @@ class _DashboardViewState extends State<DashboardView> {
                             _showCreateUserForm = !_showCreateUserForm;
                             if (_showCreateUserForm) {
                               _showEditUserForm = false;
-                              _showSendNotificationForm = false;
-                              _showExtraContainerCreateUser = true;
+                              _showDeleteUser = false;
+                              _showExtraContainerCreateUser = false;
+                              
                             }
+                            
                           });
                         },
                         text: 'Crear usuario',
@@ -78,9 +79,11 @@ class _DashboardViewState extends State<DashboardView> {
                             _showEditUserForm = !_showEditUserForm;
                             if (_showEditUserForm) {
                               _showCreateUserForm = false;
-                              _showSendNotificationForm = false;
+                              _showDeleteUser = false;
                               _showExtraContainerCreateUser = false;
+                              
                             }
+                            
                           });
                         },
                         text: 'Editar usuario',
@@ -91,21 +94,25 @@ class _DashboardViewState extends State<DashboardView> {
                       CustomOutlinedButton(
                         onPressed: () {
                           setState(() {
-                            _showSendNotificationForm =
-                                !_showSendNotificationForm;
-                            if (_showSendNotificationForm) {
+                            _showDeleteUser =
+                                !_showDeleteUser;
+                            if (_showDeleteUser) {
                               _showCreateUserForm = false;
                               _showEditUserForm = false;
-                              _showCreateUserForm = false;
+                              _showExtraContainerCreateUser = false;
                             }
                           });
                         },
-                        text: 'Enviar notificación',
+                        text: 'Eliminar Usuario',
                         isFilled: true,
                         color: CustomColor.buttons,
                       ),
                     ],
                   ),
+
+
+
+
                   if (_showCreateUserForm)
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
@@ -208,7 +215,13 @@ class _DashboardViewState extends State<DashboardView> {
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  setState(() {
+                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
+                            
+                          });
+                                
+                                },
                                 text: 'Crear usuario',
                                 isFilled: true,
                                 color: CustomColor.buttons,
@@ -304,7 +317,13 @@ class _DashboardViewState extends State<DashboardView> {
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                  setState(() {
+                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
+                            
+                          });
+                                
+                                },
                                   isFilled: true,
                                   color: CustomColor.buttons,
                                   text: 'Guardar Cambio'),
@@ -313,7 +332,7 @@ class _DashboardViewState extends State<DashboardView> {
                         ))),
 
 
-                  if (_showSendNotificationForm)
+                  if (_showDeleteUser)
                     Padding(
                         padding: EdgeInsets.only(top: 20),
                         child: Form(
@@ -336,73 +355,20 @@ class _DashboardViewState extends State<DashboardView> {
                                 onChanged: (String? newValue) {},
                               ),
                             ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                      decoration: CustomInputs.createUser(
-                                          colorBorder: Colors.black,
-                                          hint: 'Nombre',
-                                          label: 'Nombre')),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                      decoration: CustomInputs.createUser(
-                                          colorBorder: Colors.black,
-                                          hint: 'Apellido Materno',
-                                          label: 'Apellido Materno')),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                      decoration: CustomInputs.createUser(
-                                          colorBorder: Colors.black,
-                                          hint: 'Apellido Paterno',
-                                          label: 'Apellido Paterno')),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                      decoration: CustomInputs.createUser(
-                                          colorBorder: Colors.black,
-                                          hint: 'Correo Electronico',
-                                          label: 'Correo Electronico')),
-                                ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  width: 100,
-                                  child: DropdownButtonFormField<String>(
-                                    decoration: CustomInputs.dropDownItem(
-                                        colorBorder: Colors.black,
-                                        hint: 'Rol',
-                                        label: 'Rol'),
-                                    items: ['Admin', 'User', 'Guest']
-                                        .map((String role) {
-                                      return DropdownMenuItem<String>(
-                                        value: role,
-                                        child: Text(role),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {},
-                                  ),
-                                ),
-                              ],
-                            ),
+                            
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                  setState(() {
+                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
+                            
+                          });
+                                
+                                },
                                   isFilled: true,
                                   color: CustomColor.buttons,
-                                  text: 'Guardar Cambio'),
+                                  text: 'Eliminar Usuario'),
                             )
                           ],
                         )))

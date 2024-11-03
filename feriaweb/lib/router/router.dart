@@ -16,12 +16,13 @@ class Flurorouter {
   // Dashboard Menu
   //TODO: CREAR RUTAS PARA LOS DIFERENTES PANELES DE CONTROL
   static String dashboardRoute = '/dashboard';
-  static String pPendientesRoute = '/dashboard/pagos-pendientes';
+  static String pRealizadosRoute = '/dashboard/pagos-pendientes';
   static String aPendientesRoute = '/dashboard/archivos-pendientes';
   static String hTramitesRoute = '/dashboard/historial-tramites';
 
   //Dashboard opciones
   static String notifyRoute = '/dashboard/notificaciones';
+  static String notifyRouteAdm = '/admin/notificaciones';
   static String configRoute = '/dashboard/ajustes';
   //logout
   static String logoutRoute = '/Dashboard/logout';
@@ -38,11 +39,15 @@ class Flurorouter {
     // Dashboard
     //TODO: CREAR RUTAS PARA LOS DIFERENTES PANELES DE CONTROL
     router.define(dashboardRoute, handler: DashboardHandlers.dashboard, transitionType: TransitionType.none );
-    router.define(pPendientesRoute, handler: DashboardHandlers.pPendiente, transitionType: TransitionType.none );
+    router.define(pRealizadosRoute, handler: DashboardHandlers.pRealizados, transitionType: TransitionType.none );
     router.define(aPendientesRoute, handler: DashboardHandlers.aPendiente, transitionType: TransitionType.none );
     router.define(hTramitesRoute, handler: DashboardHandlers.hTramites, transitionType: TransitionType.none );
     router.define(notifyRoute, handler: DashboardHandlers.notify, transitionType: TransitionType.none );
     router.define(configRoute, handler: DashboardHandlers.config, transitionType: TransitionType.none );
+
+
+    //adm dashboard
+    router.define(notifyRouteAdm, handler: DashboardHandlers.notifyadm, transitionType: TransitionType.none );
 
     // 404
     router.notFoundHandler = NoPageFoundHandlers.noPageFound;
