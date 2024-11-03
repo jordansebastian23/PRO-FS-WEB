@@ -1,11 +1,11 @@
-import 'package:feriaweb/custom_imputs.dart';
+import 'package:feriaweb/constants/colors.dart';
+import 'package:feriaweb/ui/layouts/auth/widgets/custom_imputs.dart';
 import 'package:feriaweb/providers/register_form_provider.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feriaweb/router/router.dart';
 
-import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/buttons/link_text.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,7 @@ class RegisterView extends StatelessWidget {
         final registerFormProvider = Provider.of<RegisterFormProvider>(context, listen: false);
 
         return Container(
-          margin: EdgeInsets.only(top: 50),
+          margin: EdgeInsets.only(top: 10),
           padding: EdgeInsets.symmetric( horizontal: 20 ),
           child: Center(
             child: ConstrainedBox(
@@ -120,6 +120,8 @@ class RegisterView extends StatelessWidget {
                     
                     SizedBox( height: 20 ),
                     CustomOutlinedButton(
+                      isFilled: true,
+                      color: CustomColor.buttons,
                       onPressed: () {
 
                         registerFormProvider.validateForm();

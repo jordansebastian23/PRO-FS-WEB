@@ -1,3 +1,4 @@
+import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/ui/layouts/dashboard/dashboard_layout.dart';
 import 'package:feriaweb/ui/layouts/splash/splash_layout.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ class AppState extends StatelessWidget {
           lazy: false,
           create: ( _ ) => AuthProvider()
         ),
+
+        ChangeNotifierProvider(
+          lazy: false,
+          create: ( _ ) => SidemenuProvider() )
       ],
       child: MyApp(),
     );

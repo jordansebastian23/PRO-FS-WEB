@@ -1,3 +1,4 @@
+import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/login_form_provider.dart';
 import 'package:email_validator/email_validator.dart';
@@ -25,7 +26,7 @@ class LoginView extends StatelessWidget {
 
 
         return Container(
-        margin: EdgeInsets.only(top: 100),
+        margin: EdgeInsets.only(top: 10),
         padding: EdgeInsets.symmetric( horizontal: 20 ),
         child: Center(
           child: ConstrainedBox(
@@ -72,8 +73,11 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                   
-                  SizedBox( height: 10 ),
+                  SizedBox( height: 15 ),
                   CustomOutlinedButton(
+                    isFilled: true,
+                    color: CustomColor.buttons,
+
                     onPressed: () {
                       final isValid = loginFormProvider.validateForm();
                       if ( isValid )

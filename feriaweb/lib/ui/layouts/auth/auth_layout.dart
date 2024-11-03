@@ -2,8 +2,6 @@ import 'package:feriaweb/ui/layouts/auth/widgets/background_logiquick.dart';
 import 'package:feriaweb/ui/layouts/auth/widgets/custom_title.dart';
 import 'package:flutter/material.dart';
 
-import 'package:feriaweb/ui/layouts/auth/widgets/background_logiquick.dart';
-import 'package:feriaweb/ui/layouts/auth/widgets/custom_title.dart';
 
 
 
@@ -101,7 +99,8 @@ class _DesktopBody extends StatelessWidget {
         children: [
 
           // Logi Background
-          Expanded(child: BackgroundLogiQuick()),
+          Expanded(
+            child: BackgroundLogiQuick()),
           
 
           // View Container
@@ -111,7 +110,7 @@ class _DesktopBody extends StatelessWidget {
             color: Colors.black,
             child: Column(
               children: [
-                SizedBox( height: 20 ),
+                SizedBox( height: 100 ),
                 CustomTitle(),
                 SizedBox( height: 50 ),
                 Expanded(child: child ),

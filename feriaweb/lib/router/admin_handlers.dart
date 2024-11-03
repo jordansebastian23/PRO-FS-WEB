@@ -1,5 +1,5 @@
 import 'package:feriaweb/providers/auth_provider.dart';
-import 'package:feriaweb/ui/views/dashboard_view.dart';
+import 'package:feriaweb/ui/views/admin/dashboard_view.dart';
 import 'package:fluro/fluro.dart';
 
 import 'package:feriaweb/ui/views/login_view.dart';
