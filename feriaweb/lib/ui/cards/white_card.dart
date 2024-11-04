@@ -39,9 +39,9 @@ class WhiteCard extends StatelessWidget {
               ],
             ),
             Divider(
-              thickness: 3,
-              indent: 10,
-              endIndent: 10,
+              thickness: 2,
+              indent: 20,
+              endIndent: 20,
               color: Colors.black,
             ),
           ],
