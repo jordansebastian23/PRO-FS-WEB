@@ -2,6 +2,7 @@ import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/ui/views/admin/nofity_adm_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
+import 'package:feriaweb/ui/views/agent/archives_uppload.dart';
 import 'package:feriaweb/ui/views/login_view.dart';
 import 'package:fluro/fluro.dart';
 import 'package:provider/provider.dart';
@@ -39,14 +40,14 @@ class DashboardHandlers {
 
   //TODO: ASIGNAR LA VISTA
 
-  static Handler aPendiente = Handler(
+  static Handler aSubidos = Handler(
     handlerFunc: ( context, params ) {
 
       final authProvider = Provider.of<AuthProvider>(context!);
-      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.aSubidosRoute);
 
       if ( authProvider.authStatus == AuthStatus.authenticated )
-        return PaymentsSuccess();
+        return ArchivesUppload();
       else 
         return LoginView();
     }

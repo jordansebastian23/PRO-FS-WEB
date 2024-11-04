@@ -42,11 +42,11 @@ class SideBar extends StatelessWidget {
                 navigateTo(Flurorouter.pRealizadosRoute);
               }),
           MenuItem(
-              text: 'Archivos Pendientes',
+              text: 'Archivos Subidos',
               icon: Icons.edit_document,
-              isActive: false,
+              isActive: sidemenuProvider.currentPage == Flurorouter.aSubidosRoute,
               onPressed: () {
-                navigateTo(Flurorouter.pRealizadosRoute);
+                navigateTo(Flurorouter.aSubidosRoute);
               }),
           MenuItem(
               text: 'Historial de Tramites',
