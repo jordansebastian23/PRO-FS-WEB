@@ -12,12 +12,14 @@ import 'package:feriaweb/ui/buttons/link_text.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
-  
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
 
-    final authProvider = Provider.of<AuthProvider>(context);
-    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return ChangeNotifierProvider(
       create: ( _ ) => LoginFormProvider(),
       child: Builder(builder: ( context ){
@@ -41,9 +43,9 @@ class LoginView extends StatelessWidget {
                   TextFormField(
                     validator: ( value ) {
                       if( !EmailValidator.validate(value ?? '') ) return 'Email no válido';
-
                       return null;
                     },
+                    controller: _emailController,
                     onChanged: ( value ) => loginFormProvider.email = value,
                     style: TextStyle( color: Colors.white ),
                     decoration: CustomInputs.loginInputDecoration(
@@ -61,9 +63,9 @@ class LoginView extends StatelessWidget {
                     validator: ( value ) {
                       if ( value == null || value.isEmpty ) return 'Ingrese su contraseña';
                       if ( value.length < 6 ) return 'La contraseña debe de ser de 6 caracteres';
-
                       return null; // Válido
                     },
+                    controller: _passwordController,
                     obscureText: true,
                     style: TextStyle( color: Colors.white ),
                     decoration: CustomInputs.loginInputDecoration(
@@ -79,9 +81,7 @@ class LoginView extends StatelessWidget {
                     color: CustomColor.buttons,
 
                     onPressed: () {
-                      final isValid = loginFormProvider.validateForm();
-                      if ( isValid )
-                        authProvider.login(loginFormProvider.email, loginFormProvider.password);
+                      authProvider.loginWithCredentials(_emailController.text, _passwordController.text);
                     }, 
                     text: 'Ingresar',
                   ),
@@ -123,7 +123,9 @@ class LoginView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              authProvider.loginWithGoogle();
+                            },
                             icon: Image.asset(
                               'assets/icons/google_icon1.png',
                               height: 20.0,

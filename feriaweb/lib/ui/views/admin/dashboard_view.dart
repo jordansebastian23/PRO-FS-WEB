@@ -17,7 +17,7 @@ class _DashboardViewState extends State<DashboardView> {
   bool _showDeleteUser = false;
   bool _showExtraContainerCreateUser = false;
 
-    final TextEditingController _nombreController = TextEditingController();
+  final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _apellidoMaternoController = TextEditingController();
   final TextEditingController _apellidoPaternoController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -288,6 +288,7 @@ class _DashboardViewState extends State<DashboardView> {
                                 text: 'Crear usuario',
                                 isFilled: true,
                                 color: CustomColor.buttons,
+                                // TODO: Implementar mensajes de exito o fallo, y luego limpiar los campos si es exitoso
                               ),
                             ),
                           ],

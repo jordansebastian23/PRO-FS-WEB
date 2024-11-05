@@ -1,56 +1,64 @@
 
 
-import 'package:feriaweb/router/router.dart';
-import 'package:feriaweb/services/local_storage.dart';
-import 'package:feriaweb/services/navigation_service.dart';
+//  import 'package:feriaweb/router/router.dart';
+//  import 'package:feriaweb/services/local_storage.dart';
+//  import 'package:feriaweb/services/navigation_service.dart';
+import 'package:feriaweb/services/google_auth.dart';
+import 'package:feriaweb/services/local_login.dart';
+import 'package:feriaweb/services/session_manager.dart';
 import 'package:flutter/material.dart';
-
-enum AuthStatus {
-  checking,
-  authenticated,
-  notAuthenticated
-}
+ 
+ enum AuthStatus {
+   checking,
+   authenticated,
+   notAuthenticated
+ }
 
 class AuthProvider extends ChangeNotifier {
-
-  String? _token;
   AuthStatus authStatus = AuthStatus.checking;
 
-
   AuthProvider() {
-    this.isAuthenticated();
+    _checkAuthStatus();
   }
 
-
-  login( String email, String password ) {
-
-    // TODO: Petición HTTP
-    this._token = 'adjkfhadfyiu12y3hjasd.ajskhdaks.kjshdkjas';
-    LocalStorage.prefs.setString('token', this._token! );
-    
-    authStatus = AuthStatus.authenticated;
+  Future<void> _checkAuthStatus() async {
+    final isAuthenticated = await SessionManager.getAuthStatusSync();
+    authStatus = isAuthenticated ? AuthStatus.authenticated : AuthStatus.notAuthenticated;
     notifyListeners();
-    
-    NavigationService.replaceTo(Flurorouter.dashboardRoute);
   }
 
-  Future<bool> isAuthenticated() async {
+  Future<void> loginWithGoogle() async {
+    final googleAuth = AutenticacionGoogle();
+    await googleAuth.autentificaciongoogle(
+      onSuccess: () {
+        authStatus = AuthStatus.authenticated;
+        notifyListeners();
+      },
+      onError: (error) {
+        authStatus = AuthStatus.notAuthenticated;
+        notifyListeners();
+      },
+    );
+  }
 
-    final token = LocalStorage.prefs.getString('token');
+  Future<void> loginWithCredentials(String email, String password) async {
+    await LoginService.loginUser(
+      email: email,
+      password: password,
+      onSuccess: () {
+        authStatus = AuthStatus.authenticated;
+        notifyListeners();
+      },
+      onError: (error) {
+        authStatus = AuthStatus.notAuthenticated;
+        notifyListeners();
+      },
+    );
+  }
 
-    if( token == null ) {
-      authStatus = AuthStatus.notAuthenticated;
-      notifyListeners();
-      return false;
-    }
-
-    // TODO: ir al backend y comprobar si el JWT es válido
-    
-    await Future.delayed(Duration(milliseconds: 1000 ));
-    authStatus = AuthStatus.authenticated;
+  Future<void> logout() async {
+    await SessionManager.logout();
+    authStatus = AuthStatus.notAuthenticated;
     notifyListeners();
-    return true;
   }
-
-
 }
