@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:feriaweb/services/local_login.dart';
+import 'package:feriaweb/services/session_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -9,7 +10,7 @@ class AutenticacionGoogle{
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = GoogleSignIn(clientId: '642056532071-67cmvge6sle5tol7lhe2vfdgotlbmgdl.apps.googleusercontent.com');
 
-  Future<User?> autentificaciongoogle({
+  Future<String?> autentificaciongoogle({
     required Function onSuccess,
     required Function(String) onError,
   }) async{
@@ -24,16 +25,17 @@ class AutenticacionGoogle{
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', token);
       await prefs.setString('loginType', 'google');
-
+      await SessionManager.login(token); // Update authentication status
       // Check user role in Django
-        final userData = await LoginService.getUserData();
-        if (userData['role'] == 'Visado') {
-          onSuccess();
-        } else {
-          onError('User does not have the required "Visado" role.');
-        }
+      final userData = await LoginService.getUserData();
+      if (userData['role'] == 'Visado') {
+        onSuccess();
+        return token;
+      } else {
+        onError('User does not have the required "Visado" role.');
+      } 
     }
-    return user;
+    return null;
   } catch (e) {
     print('Error in Google Authentication: $e');
     return null;

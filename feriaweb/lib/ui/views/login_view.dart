@@ -2,6 +2,7 @@ import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/login_form_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:feriaweb/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feriaweb/router/router.dart';
@@ -12,6 +13,9 @@ import 'package:feriaweb/ui/buttons/link_text.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
+  void navigateTo(String routeName) {
+    NavigationService.navigateTo(routeName);
+  }
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -80,8 +84,8 @@ class LoginView extends StatelessWidget {
                     isFilled: true,
                     color: CustomColor.buttons,
 
-                    onPressed: () {
-                      authProvider.loginWithCredentials(_emailController.text, _passwordController.text);
+                    onPressed: () async {
+                      await authProvider.loginWithCredentials(_emailController.text, _passwordController.text);
                     }, 
                     text: 'Ingresar',
                   ),
@@ -124,7 +128,7 @@ class LoginView extends StatelessWidget {
                               ),
                             ),
                             onPressed: () async {
-                              authProvider.loginWithGoogle();
+                              await authProvider.loginWithGoogle();
                             },
                             icon: Image.asset(
                               'assets/icons/google_icon1.png',

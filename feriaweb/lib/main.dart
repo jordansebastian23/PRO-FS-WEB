@@ -39,12 +39,12 @@ class AppState extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           lazy: false,
-          create: (_) => SidemenuProvider(),
+          create: (_) => AuthProvider(),
         ),
         // Ensure at least one provider is added, replace AuthProvider if needed
         ChangeNotifierProvider(
           lazy: false,
-          create: (_) => AuthProvider(),
+          create: (_) => SidemenuProvider(),
         ),
       ],
       child: MyApp(),
@@ -56,6 +56,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+
+    // Logging to confirm rebuilds
+    print("Current authStatus: ${authProvider.authStatus}");
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Admin Dashboard',
@@ -63,14 +67,14 @@ class MyApp extends StatelessWidget {
       onGenerateRoute: Flurorouter.router.generator,
       navigatorKey: NavigationService.navigatorKey,
       builder: (_, child) {
-        // Use the authStatus from AuthProvider to determine navigation
-        switch (authProvider.authStatus) {
-          case AuthStatus.authenticated:
-            return DashboardLayout(child: child!);
-          case AuthStatus.notAuthenticated:
-            return AuthLayout(child: child!);
-          default:
-            return SplashLayout(); // Display loading indicator while checking auth status
+        if (authProvider.authStatus == AuthStatus.checking) {
+          return SplashLayout();
+        } else if (authProvider.authStatus == AuthStatus.authenticated) {
+          print('Calling DashboardLayout');
+          return DashboardLayout(child: child!);
+        } else {
+          print('Calling AuthLayout');
+          return AuthLayout(child: child!);
         }
       },
       theme: ThemeData.light().copyWith(

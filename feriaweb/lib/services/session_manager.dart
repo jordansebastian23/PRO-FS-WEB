@@ -8,9 +8,8 @@ class SessionManager {
     _isAuthenticated = prefs.getString('token') != null;
   }
 
-  static bool getAuthStatusSync() {
-    return _isAuthenticated;
-  }
+  static bool getAuthStatusSync() => _isAuthenticated;
+
   
   static Future<void> setLoginType(String type) async {
     final prefs = await SharedPreferences.getInstance();
@@ -34,5 +33,6 @@ class SessionManager {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token);
     _isAuthenticated = true; // Update auth status
+    print("Token set in SessionManager: $token");
   }
 }

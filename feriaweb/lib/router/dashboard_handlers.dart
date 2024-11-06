@@ -1,58 +1,89 @@
+import 'package:feriaweb/providers/auth_provider.dart';
+import 'package:feriaweb/providers/sidemenu_provider.dart';
+import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/ui/views/admin/dashboard_view.dart';
 import 'package:feriaweb/ui/views/admin/nofity_adm_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
 import 'package:feriaweb/ui/views/agent/archives_uppload.dart';
 import 'package:feriaweb/ui/views/login_view.dart';
 import 'package:fluro/fluro.dart';
-import 'package:feriaweb/services/session_manager.dart';
+import 'package:provider/provider.dart';
 
 class DashboardHandlers {
   static Handler dashboard = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? DashboardView() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.dashboardRoute);
+      
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? DashboardView()
+          : LoginView();
     },
   );
 
   static Handler pRealizados = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? PaymentsSuccess() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? PaymentsSuccess()
+          : LoginView();
     },
   );
 
   static Handler aSubidos = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? ArchivesUppload() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.aSubidosRoute);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? ArchivesUppload()
+          : LoginView();
     },
   );
 
   static Handler hTramites = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? PaymentsSuccess() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? PaymentsSuccess()
+          : LoginView();
     },
   );
 
   static Handler notify = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? PaymentsSuccess() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? PaymentsSuccess()
+          : LoginView();
     },
   );
 
   static Handler notifyadm = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? NofityAdmView() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.notifyRouteAdm);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? NofityAdmView()
+          : LoginView();
     },
   );
 
   static Handler config = Handler(
-    handlerFunc: (context, params)  {
-      final isAuth =  SessionManager.getAuthStatusSync();
-      return isAuth ? PaymentsSuccess() : LoginView();
+    handlerFunc: (context, params) {
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? PaymentsSuccess()
+          : LoginView();
     },
   );
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:feriaweb/services/session_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,13 +34,15 @@ class LoginService {
       final prefs = await SharedPreferences.getInstance();
       if (responseData['token'] != null) {
         prefs.setString('token', responseData['token']);
+        prefs.setString('loginType', 'credentials');
+        await SessionManager.login(responseData['token']); // Ensure authenticated status is updated
       } else {
         throw Exception('Token not found in response');
       }
-
       // Fetch user data to check the role
       final userData = await getUserData();
-      if (userData['role'] == 'Visado') {
+      print(userData);
+      if (userData['roles'] != null && userData['roles'].contains('Visado')) {
         onSuccess();
       } else {
         onError('User does not have the required "Visado" role.');
