@@ -28,12 +28,12 @@ class AutenticacionGoogle{
       await SessionManager.login(token); // Update authentication status
       // Check user role in Django
       final userData = await LoginService.getUserData();
-      if (userData['role'] == 'Visado') {
+      print(userData);
+      if (userData['roles'] != null && userData['roles'].contains('Visado')) {
         onSuccess();
-        return token;
       } else {
         onError('User does not have the required "Visado" role.');
-      } 
+      }
     }
     return null;
   } catch (e) {

@@ -15,4 +15,17 @@ class NavigationService {
     return navigatorKey.currentState!.pushReplacementNamed(routeName);
   }
 
+  // Mostrar error en un snackbar
+  static void showErrorSnackbar(String message) {
+    final context = navigatorKey.currentContext;
+    if (context != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
+  }
+
 }

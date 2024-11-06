@@ -37,21 +37,24 @@ class LoginService {
         prefs.setString('loginType', 'credentials');
         await SessionManager.login(responseData['token']); // Ensure authenticated status is updated
       } else {
-        throw Exception('Token not found in response');
+        onError("Login failed: Token not found in response.");
+        return {};
       }
       // Fetch user data to check the role
       final userData = await getUserData();
-      print(userData);
+      print(userData);  
       if (userData['roles'] != null && userData['roles'].contains('Visado')) {
         onSuccess();
       } else {
         onError('User does not have the required "Visado" role.');
       }
 
-      return responseData;
-    } else {
-      throw Exception('Failed to login: ${response.body}');
+      } else {
+      onError("Invalid email or password.");
     }
+
+    return {};
+    
   }
 
   static Future<Map<String, dynamic>> getUserData() async {

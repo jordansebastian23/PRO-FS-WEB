@@ -44,12 +44,16 @@ class AuthProvider extends ChangeNotifier {
           notifyListeners();
           print('Navigating to dashboard');
           NavigationService.replaceTo(Flurorouter.dashboardRoute);
+        } else {
+          authStatus = AuthStatus.notAuthenticated; 
+          notifyListeners();
+
         }
       },
       onError: (error) {
         authStatus = AuthStatus.notAuthenticated;
         notifyListeners();
-        print("Login failed: $error");
+        NavigationService.showErrorSnackbar(error);  // Show the error message
       },
     );
   }
@@ -72,6 +76,7 @@ class AuthProvider extends ChangeNotifier {
         authStatus = AuthStatus.notAuthenticated;
         notifyListeners();
         print("Login failed: $error");
+        NavigationService.showErrorSnackbar(error);  // Show the error message
       },
     );
   }
