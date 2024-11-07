@@ -1,9 +1,9 @@
-import 'package:feriaweb/datatables/archive_uppload_datasource.dart';
+import 'package:feriaweb/datatables/payments_datasource.dart';
 import 'package:flutter/material.dart';
 
 
-class ArchivesUppload extends StatelessWidget {
-  const ArchivesUppload({super.key});
+class HistoryTramites extends StatelessWidget {
+  const HistoryTramites({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,38 +21,38 @@ class ArchivesUppload extends StatelessWidget {
                   columnSpacing: 1,
                   columns: [
                     DataColumn(
-                        label: Text('ID Usuario',
+                        label: Text('Fecha de tramite',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('N° tramite',
+                        label: Text('N° Tramite',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
                         label: Text('N° Carga',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('tipo de carga',
+                        label: Text('Tipo de carga',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Archivos faltantes',
+                        label: Text('Destinatario',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Tipo de archivos',
+                        label: Text('Archivos subidos',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Estado',
+                        label: Text('Estado de tramite',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     
                     DataColumn(
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: ArchiveUpploadDatasource(context),
+                  source: PaymentsDatasource(context),
                   header: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FittedBox(
                         fit: BoxFit.contain,
-                        child: Text('Archivos Subidos',
+                        child: Text('Historial de Tramites',
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                       ),
@@ -62,11 +62,12 @@ class ArchivesUppload extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
   BoxDecoration buildBoxDecoration() => BoxDecoration(
     color: Colors.white,
     border: Border.all(color: Colors.black,
@@ -74,5 +75,4 @@ class ArchivesUppload extends StatelessWidget {
     borderRadius: BorderRadius.circular(20),
           
           );
-
 }

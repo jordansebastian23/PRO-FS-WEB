@@ -51,33 +51,19 @@ class SideBar extends StatelessWidget {
           MenuItem(
               text: 'Historial de Tramites',
               icon: Icons.calendar_month_outlined,
-              isActive: false,
+              isActive: sidemenuProvider.currentPage == Flurorouter.hTramitesRoute,
               onPressed: () {
                 //TODO: Realizar lo mismo para todos
-                navigateTo(Flurorouter.pRealizadosRoute);
+                navigateTo(Flurorouter.hTramitesRoute);
               }),
           SizedBox(height: 30),
           TextSeparator(text: 'Opciones'),
-          MenuItem(
-              text: 'Notificaciones',
-              icon: Icons.notifications_outlined,
-              isActive: false,
-              onPressed: () {
-                navigateTo(Flurorouter.pRealizadosRoute);
-              }),
           MenuItem(
               text: 'Notificaciones Adm',
               icon: Icons.notifications_outlined,
               isActive: sidemenuProvider.currentPage == Flurorouter.notifyRouteAdm,
               onPressed: () {
                 navigateTo(Flurorouter.notifyRouteAdm);
-              }),
-          MenuItem(
-              text: 'Ajustes',
-              icon: Icons.settings,
-              isActive: false,
-              onPressed: () {
-                navigateTo(Flurorouter.pRealizadosRoute);
               }),
           SizedBox(height: 50),
           TextSeparator(text: 'Exit'),

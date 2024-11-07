@@ -4,14 +4,14 @@ import 'package:feriaweb/ui/cards/white_card.dart';
 import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 
-class NofityAdmView extends StatefulWidget {
-  const NofityAdmView({super.key});
+class NofityView extends StatefulWidget {
+  const NofityView({super.key});
 
   @override
-  State<NofityAdmView> createState() => _NofityAdmViewState();
+  State<NofityView> createState() => _NofityViewState();
 }
 
-class _NofityAdmViewState extends State<NofityAdmView> {
+class _NofityViewState extends State<NofityView> {
   final TextEditingController _notificationController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class _NofityAdmViewState extends State<NofityAdmView> {
       alignment: Alignment.topCenter,
       child: SizedBox(
         width: 800,
-        height: 400,
+        height: 700,
         child: Container(
           child: WhiteCard(
               icon: Icons.notifications_none_outlined,
@@ -85,6 +85,36 @@ class _NofityAdmViewState extends State<NofityAdmView> {
                   SizedBox(
                     height: 10,
                   ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        color: Colors.amber,
+                      )),
+                      Expanded(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        color : Colors.blue
+                      )),
+                      Expanded(
+                      child: Container(
+                        width: 200,
+                        height: 200,
+                        color: Colors.green
+                      )),
+
+                  ],
+                ),
+
+
+
+
+
                   TextFormField(
                     controller: _notificationController,
                     maxLines: 5, // Permite múltiples líneas
