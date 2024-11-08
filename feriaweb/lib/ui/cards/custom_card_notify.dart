@@ -25,7 +25,6 @@ class CustomCardNotify extends StatefulWidget {
 
 class _CustomCardNotifyState extends State<CustomCardNotify> {
   final TextEditingController _notificationController = TextEditingController();
-  int _selectedRadio = 1;
 
 
   @override
