@@ -1,4 +1,4 @@
-import 'package:feriaweb/datatables/payments_datasource.dart';
+import 'package:feriaweb/datatables/history_datasource.dart';
 import 'package:flutter/material.dart';
 
 
@@ -46,7 +46,7 @@ class HistoryTramites extends StatelessWidget {
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: PaymentsDatasource(context),
+                  source: HistoryDatasource(context),
                   header: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

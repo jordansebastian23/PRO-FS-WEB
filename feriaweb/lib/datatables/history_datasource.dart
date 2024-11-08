@@ -3,37 +3,32 @@ import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:flutter/material.dart';
 
-class PaymentsDatasource extends DataTableSource {
+class HistoryDatasource extends DataTableSource {
   late BuildContext context;
-  PaymentsDatasource(this.context);
+  HistoryDatasource(this.context);
   @override
   DataRow? getRow(int index) {
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell(Text('0' + (index + 1).toString(),
+        DataCell(Text('05/10/2021',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('' + (index + 100).toString(),
+        DataCell(Text('202',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('Carga Suelta',
+        DataCell(Text('202',
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
+        DataCell(Text('LCL Directo',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
         DataCell(Text(
             'Matias Gonzales R.'.length > 14
                 ? 'Matias Gonzales R.'.substring(0, 14) + '...'
                 : 'Matias Gonzales R.',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('CLP\$' + Random().nextInt(1000000).toString(),
+        DataCell(Text('factura.pdf',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
         DataCell(Text('Completado',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Row(
-          children: [
-            Icon(Icons.credit_card_outlined, size: 20, color: Colors.black),
-            SizedBox(width: 2),
-            Text('**** 1234',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-          ],
-        )),
+        
         DataCell(TextButton(
           onPressed: () {
             _showDetailsDialog(context, index);
@@ -51,27 +46,19 @@ class PaymentsDatasource extends DataTableSource {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Detalles del Pago - Numero de carga ${index + 100}'),
+          title: Text('Detalles de tramite - Numero de carga ${index + 100}'),
           content: SingleChildScrollView(
             child: Container(
               width: 300,
               child: ListBody(
                 children: <Widget>[
-                  //Fecha de creación
-                  Text('Fecha: ${DateTime.now().toString()}'),
-                  //ID del usuario
-                  Text('ID usuario: 0' + (index + 1).toString()),
-                  //Correo del usuario
-                  Text('Correo: boladios@logiquick.com'),
-                  //Número de carga
-                  Text('Numero Carga: ' + (index + 100).toString()),
-                  //Tipo de carga
-                  Text('Carga Suelta'),
-                  //Nombre del destinatario
-                  Text('Nombre: Matias Gonzales R.'),
-                  //Monto a pagar
-                  Text('Monto: CLP\$${Random().nextInt(1000000)}'),
-                  //Estado del pago
+                  Text('05/10/2021'),
+                  Text('202'),
+                  Text('202'),
+                  Text('LCL Directo'),
+                  Text('Matias Gonzales R.'),
+                  Text('factura.pdf'),
+                  Text('Pendiente'),
                   Row(
                     children: [
                       Text('Estado: Completado'),
@@ -127,7 +114,13 @@ class PaymentsDatasource extends DataTableSource {
                 children: <Widget>[
                   TextField(
                     decoration: InputDecoration(
-                      //labelText: 'Nombre',
+                      //labelText: 'N tramite',
+                      hintText: '202',
+                    ),
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Nombre',
                       hintText: 'Matias Gonzales R.',
                     ),
                   ),
