@@ -63,9 +63,7 @@ class _DashboardViewState extends State<DashboardView> {
                               _showEditUserForm = false;
                               _showDeleteUser = false;
                               _showExtraContainerCreateUser = false;
-                              
                             }
-                            
                           });
                         },
                         text: 'Crear usuario',
@@ -81,9 +79,7 @@ class _DashboardViewState extends State<DashboardView> {
                               _showCreateUserForm = false;
                               _showDeleteUser = false;
                               _showExtraContainerCreateUser = false;
-                              
                             }
-                            
                           });
                         },
                         text: 'Editar usuario',
@@ -94,8 +90,7 @@ class _DashboardViewState extends State<DashboardView> {
                       CustomOutlinedButton(
                         onPressed: () {
                           setState(() {
-                            _showDeleteUser =
-                                !_showDeleteUser;
+                            _showDeleteUser = !_showDeleteUser;
                             if (_showDeleteUser) {
                               _showCreateUserForm = false;
                               _showEditUserForm = false;
@@ -103,16 +98,12 @@ class _DashboardViewState extends State<DashboardView> {
                             }
                           });
                         },
-                        text: 'Eliminar Usuario',
+                        text: 'Deshabilitar usuario',
                         isFilled: true,
                         color: CustomColor.buttons,
                       ),
                     ],
                   ),
-
-
-
-
                   if (_showCreateUserForm)
                     Padding(
                       padding: const EdgeInsets.only(top: 20),
@@ -217,10 +208,9 @@ class _DashboardViewState extends State<DashboardView> {
                               child: CustomOutlinedButton(
                                 onPressed: () {
                                   setState(() {
-                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
-                            
-                          });
-                                
+                                    _showExtraContainerCreateUser =
+                                        !_showExtraContainerCreateUser;
+                                  });
                                 },
                                 text: 'Crear usuario',
                                 isFilled: true,
@@ -314,24 +304,53 @@ class _DashboardViewState extends State<DashboardView> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                      decoration: CustomInputs.createUser(
+                                          colorBorder: Colors.black,
+                                          hint: 'N° Telefono',
+                                          label: 'N° Telefono')),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Contraseña',
+                                        label: 'Contraseña'),
+                                    obscureText: true,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'confirmar Contraseña',
+                                        label: 'Confirmar Contraseña'),
+                                    obscureText: true,
+                                  ),
+                                ),
+                              ],
+                            ),
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
                                   onPressed: () {
-                                  setState(() {
-                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
-                            
-                          });
-                                
-                                },
+                                    setState(() {
+                                      _showExtraContainerCreateUser =
+                                          !_showExtraContainerCreateUser;
+                                    });
+                                  },
                                   isFilled: true,
                                   color: CustomColor.buttons,
                                   text: 'Guardar Cambio'),
                             )
                           ],
                         ))),
-
-
                   if (_showDeleteUser)
                     Padding(
                         padding: EdgeInsets.only(top: 20),
@@ -355,25 +374,21 @@ class _DashboardViewState extends State<DashboardView> {
                                 onChanged: (String? newValue) {},
                               ),
                             ),
-                            
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
                                   onPressed: () {
-                                  setState(() {
-                            _showExtraContainerCreateUser = !_showExtraContainerCreateUser;
-                            
-                          });
-                                
-                                },
+                                    setState(() {
+                                      _showExtraContainerCreateUser =
+                                          !_showExtraContainerCreateUser;
+                                    });
+                                  },
                                   isFilled: true,
                                   color: CustomColor.buttons,
-                                  text: 'Eliminar Usuario'),
+                                  text: 'Deshabilitar Usuario'),
                             )
                           ],
                         )))
-
-
                 ],
               ),
             ),
@@ -388,56 +403,54 @@ class _DashboardViewState extends State<DashboardView> {
               width: 900,
               child: Container(
                 decoration: buildBoxDecoration(),
-                padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
+                padding:
+                    EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
                 child: PaginatedDataTable(
-                  
                   arrowHeadColor: CustomColor.buttons,
                   headingRowColor: WidgetStateProperty.all(Colors.transparent),
                   columnSpacing: 2,
-                              columns: [
-                DataColumn(
-                    label: Text('ID Usuario',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Rol',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                        DataColumn(
-                    label: Text('Correo',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Contraseña',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Numero Telefono',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Editar Informacion',
-                        style: TextStyle(fontWeight: FontWeight.bold))),
-                              ],
-                              source: UsersCreated(),
-                              header: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.group_outlined,
-                      size: 25, color: Colors.black),
-                  SizedBox(width: 10),
-                  Text('Usuarios Creados',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-                ],
-                              ),
-                              rowsPerPage: 4,
-                            ),
+                  columns: [
+                    DataColumn(
+                        label: Text('ID Usuario',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Rol',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Correo',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Contraseña',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Numero Telefono',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Editar Informacion',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                  ],
+                  source: UsersCreated(context),
+                  header: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.group_outlined, size: 25, color: Colors.black),
+                      SizedBox(width: 10),
+                      Text('Usuarios Creados',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 24)),
+                    ],
+                  ),
+                  rowsPerPage: 4,
+                ),
               ),
             ),
           ),
-
-
-                ],
-              
+      ],
     );
   }
 }
+
+
 
 BoxDecoration buildBoxDecoration() => BoxDecoration(
       color: Colors.white,
