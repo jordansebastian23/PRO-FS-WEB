@@ -1,5 +1,4 @@
 import 'package:feriaweb/constants/colors.dart';
-import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:flutter/material.dart';
 
 
