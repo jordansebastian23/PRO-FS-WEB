@@ -138,7 +138,7 @@ class _DashboardViewState extends State<DashboardView> {
                             }
                           });
                         },
-                        text: 'Eliminar Usuario',
+                        text: 'Deshabilitar usuario',
                         isFilled: true,
                         color: CustomColor.buttons,
                       ),
@@ -378,6 +378,38 @@ class _DashboardViewState extends State<DashboardView> {
                                 ),
                               ],
                             ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                      decoration: CustomInputs.createUser(
+                                          colorBorder: Colors.black,
+                                          hint: 'N° Telefono',
+                                          label: 'N° Telefono')),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Contraseña',
+                                        label: 'Contraseña'),
+                                    obscureText: true,
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'confirmar Contraseña',
+                                        label: 'Confirmar Contraseña'),
+                                    obscureText: true,
+                                  ),
+                                ),
+                              ],
+                            ),
                             SizedBox(height: 20),
                             Center(
                               child: CustomOutlinedButton(
@@ -427,7 +459,7 @@ class _DashboardViewState extends State<DashboardView> {
                                   },
                                   isFilled: true,
                                   color: CustomColor.buttons,
-                                  text: 'Eliminar Usuario'),
+                                  text: 'Deshabilitar Usuario'),
                             )
                           ],
                         )))
@@ -471,7 +503,7 @@ class _DashboardViewState extends State<DashboardView> {
                         label: Text('Editar Informacion',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: UsersCreated(),
+                  source: UsersCreated(context),
                   header: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -491,6 +523,8 @@ class _DashboardViewState extends State<DashboardView> {
     );
   }
 }
+
+
 
 BoxDecoration buildBoxDecoration() => BoxDecoration(
       color: Colors.white,

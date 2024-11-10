@@ -60,7 +60,7 @@ class SideBar extends StatelessWidget {
           SizedBox(height: 30),
           TextSeparator(text: 'Opciones'),
           MenuItem(
-              text: 'Notificaciones Adm',
+              text: 'Notificaciones',
               icon: Icons.notifications_outlined,
               isActive: sidemenuProvider.currentPage == Flurorouter.notifyRouteAdm,
               onPressed: () {

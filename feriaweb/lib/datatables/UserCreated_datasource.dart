@@ -1,6 +1,13 @@
+import 'package:feriaweb/constants/colors.dart';
+import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
+import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 
 class UsersCreated extends DataTableSource {
+  late BuildContext context;
+
+  UsersCreated(this.context);
+
   @override
   DataRow? getRow(int index) {
     return DataRow.byIndex(
@@ -17,16 +24,106 @@ class UsersCreated extends DataTableSource {
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
         DataCell(Text('*******',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('CLP\$7.233.457',
+        DataCell(Text('+56913336090',
             style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
         DataCell(TextButton(
           onPressed: () {
-            // Acción para realizar pago
+            _showEditDialog(context, index);
           },
           child: Text('Editar Informacion',
               style: TextStyle(color: Colors.teal, fontSize: 14)),
         )),
       ],
+    );
+  }
+
+  void _showEditDialog(BuildContext context, int index) {
+    showDialog(
+      barrierColor: Colors.black.withOpacity(0.2),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Text('Editar Usuario '),
+              Expanded(
+                child: TextButton(
+                onPressed: (){},
+                child: Text('Deshabilitar', style: TextStyle(color: CustomColor.buttons),)) )
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Container(
+              width: 300,
+              child: Column(
+                children: <Widget>[
+                  TextFormField(
+                    initialValue: 'Jordan Navarrete',
+                      decoration: CustomInputs.createUser(
+                          colorBorder: Colors.black,
+                          hint: 'Nombre',
+                          label: 'Nombre')),
+                  SizedBox(height: 10),
+                    TextFormField(
+                      initialValue: 'jordansebastian50@gmail.com',
+                      decoration: CustomInputs.createUser(
+                        colorBorder: Colors.black,
+                        hint: 'Email',
+                        label: 'Email')),
+                  SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    decoration: CustomInputs.dropDownItem(
+                        colorBorder: Colors.black, hint: 'Rol', label: 'Rol'),
+                    items: ['Admin', 'User', 'Guest'].map((String role) {
+                      return DropdownMenuItem<String>(
+                        value: role,
+                        child: Text(role),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {},
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                          initialValue: '*******',
+                          obscureText: true,
+                      decoration: CustomInputs.createUser(
+                          colorBorder: Colors.black,
+                          hint: 'Contraseña',
+                          label: 'Contraseña')),
+                  SizedBox(height: 10),
+                  TextFormField(
+                          initialValue: '*******',
+                          obscureText: true,
+                      decoration: CustomInputs.createUser(
+                          colorBorder: Colors.black,
+                          hint: 'Contraseña',
+                          label: 'Contraseña')),
+                  // Agrega más campos según sea necesario
+                ],
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            CustomOutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                //_showEditDialog(context, index);
+              },
+              text: 'Cerrar',
+              isFilled: true,
+              color: CustomColor.buttons,
+            ),
+            CustomOutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              text: 'Guardar',
+              isFilled: true,
+              color: CustomColor.buttons,
+            ),
+          ],
+        );
+      },
     );
   }
 
