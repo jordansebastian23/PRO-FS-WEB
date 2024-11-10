@@ -1,13 +1,15 @@
 import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
-import 'package:feriaweb/ui/views/admin/dashboard_view.dart';
-import 'package:feriaweb/ui/views/admin/nofity_adm_view.dart';
+import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
+import 'package:feriaweb/ui/views/agent/history_.dart';
+import 'package:feriaweb/ui/views/agent/nofity_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
 import 'package:feriaweb/ui/views/agent/archives_uppload.dart';
 import 'package:feriaweb/ui/views/login_view.dart';
 import 'package:fluro/fluro.dart';
 import 'package:provider/provider.dart';
+
 
 class DashboardHandlers {
   static Handler dashboard = Handler(
@@ -52,6 +54,12 @@ class DashboardHandlers {
           ? PaymentsSuccess()
           : LoginView();
     },
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.hTramitesRoute);
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return HistoryTramites();
+      else 
+        return LoginView();
+    }
   );
 
   static Handler notify = Handler(
@@ -74,6 +82,11 @@ class DashboardHandlers {
           ? NofityAdmView()
           : LoginView();
     },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return NofityView();
+      else 
+        return LoginView();
+    }
   );
 
   static Handler config = Handler(
