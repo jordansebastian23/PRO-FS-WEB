@@ -1,5 +1,7 @@
+import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/ui/cards/custom_card_archives.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ArchiveUpploadDatasource extends DataTableSource {
   late BuildContext context;
@@ -129,11 +131,18 @@ void _showDetailsDialog(BuildContext context, int index) {
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cerrar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+                  style: TextButton.styleFrom(
+                    backgroundColor: CustomColor.buttons,
+                  ),
+                  child: Text('Cerrar',
+                      style: GoogleFonts.inter(
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                          fontSize: 16)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
           ],
         );
       },
