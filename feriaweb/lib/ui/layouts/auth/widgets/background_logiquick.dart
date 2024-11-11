@@ -22,7 +22,8 @@ class BackgroundLogiQuick extends StatelessWidget {
     return BoxDecoration(
         image: DecorationImage(
           opacity: 0.2,
-          image: AssetImage('assets/pruebas.webp'),
+          
+          image: AssetImage('assets/Fondo.webp'),
           fit: BoxFit.cover
         )
     );

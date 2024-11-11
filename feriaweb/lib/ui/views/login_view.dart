@@ -2,6 +2,7 @@ import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/login_form_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:feriaweb/ui/layouts/auth/widgets/custom_imputs.dart';
 import 'package:flutter/material.dart';
 
 import 'package:feriaweb/router/router.dart';
@@ -32,7 +33,7 @@ class LoginView extends StatelessWidget {
           child: ConstrainedBox(
             constraints: BoxConstraints( maxWidth: 370 ),
             child: Form(
-              autovalidateMode: AutovalidateMode.always,
+              autovalidateMode: AutovalidateMode.disabled,
               key: loginFormProvider.formKey,
               child: Column(
                 children: [
@@ -46,7 +47,8 @@ class LoginView extends StatelessWidget {
                     },
                     onChanged: ( value ) => loginFormProvider.email = value,
                     style: TextStyle( color: Colors.white ),
-                    decoration: CustomInputs.loginInputDecoration(
+                    cursorColor: CustomColor.buttons,
+                    decoration: CustomImputs.loginInputStyle(
                       hint: 'Ingrese su correo',
                       label: 'Email',
                       icon: Icons.email_outlined
@@ -65,8 +67,9 @@ class LoginView extends StatelessWidget {
                       return null; // Válido
                     },
                     obscureText: true,
+                    cursorColor: CustomColor.buttons,
                     style: TextStyle( color: Colors.white ),
-                    decoration: CustomInputs.loginInputDecoration(
+                    decoration: CustomImputs.loginInputStyle(
                       hint: '*********',
                       label: 'Contraseña',
                       icon: Icons.lock_outline_rounded
