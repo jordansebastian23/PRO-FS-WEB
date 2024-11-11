@@ -28,7 +28,7 @@ class SideBar extends StatelessWidget {
           SizedBox(height: 50),
           TextSeparator(text: 'Menu'),
           MenuItem(
-              text: 'Panel de control',
+              text: 'Administrar Usuarios',
               icon: Icons.home,
               isActive: sidemenuProvider.currentPage == Flurorouter.dashboardRoute,
               onPressed: () {
@@ -80,7 +80,9 @@ class SideBar extends StatelessWidget {
   }
 
   BoxDecoration buildBoxDecoration() =>
-      BoxDecoration(color: CustomColor.background, boxShadow: [
+      BoxDecoration(color: CustomColor.background,
+      borderRadius: BorderRadius.only(topRight: Radius.circular(25), ),
+      boxShadow: [
         BoxShadow(
           color: Colors.black26,
           blurRadius: 26,

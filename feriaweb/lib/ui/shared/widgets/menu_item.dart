@@ -29,8 +29,14 @@ class _MenuItemState extends State<MenuItem> {
   Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: Duration(milliseconds: 250),
-      color: isHover ? Colors.white.withOpacity(0.1)
-      : widget.isActive ? CustomColor.buttons : Colors.transparent,
+      decoration: BoxDecoration(
+        color: isHover
+            ? Colors.white.withOpacity(0.1)
+            : widget.isActive
+                ? CustomColor.buttons
+                : Colors.transparent,
+        borderRadius: widget.isActive ? BorderRadius.circular(10) : BorderRadius.circular(0),
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
