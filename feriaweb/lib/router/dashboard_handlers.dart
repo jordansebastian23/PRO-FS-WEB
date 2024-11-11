@@ -1,5 +1,6 @@
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
+import 'package:feriaweb/ui/views/agent/carga_view.dart';
 import 'package:feriaweb/ui/views/agent/history_.dart';
 import 'package:feriaweb/ui/views/agent/nofity_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
@@ -98,6 +99,18 @@ class DashboardHandlers {
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
       if ( authProvider.authStatus == AuthStatus.authenticated )
         return PaymentsSuccess();
+      else 
+        return LoginView();
+    }
+  );
+
+  static Handler gCargas = Handler(
+    handlerFunc: ( context, params ) {
+
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.gCargasRoute);
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return CargaView();
       else 
         return LoginView();
     }
