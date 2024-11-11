@@ -49,6 +49,13 @@ class SideBar extends StatelessWidget {
                 navigateTo(Flurorouter.aSubidosRoute);
               }),
           MenuItem(
+              text: 'Gestionar Cargas',
+              icon: Icons.view_in_ar_outlined,
+              isActive: sidemenuProvider.currentPage == Flurorouter.gCargasRoute,
+              onPressed: () {
+                navigateTo(Flurorouter.gCargasRoute);
+              }),
+          MenuItem(
               text: 'Historial de Tramites',
               icon: Icons.calendar_month_outlined,
               isActive: sidemenuProvider.currentPage == Flurorouter.hTramitesRoute,
