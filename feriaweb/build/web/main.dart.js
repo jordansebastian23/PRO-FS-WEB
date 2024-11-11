@@ -40549,7 +40549,7 @@ A.wY.prototype={
 I(a){var s=null,r=A.aNw(B.Pw,new A.rg("assets/pruebas.webp",s,s),s,0.2)
 return A.bh(s,A.bh(s,A.ei(new A.bC(B.TM,s,s),s,s),B.q,s,new A.ae(0,400,0,1/0),s,s,s,s,s,s,s,s),B.q,s,s,new A.c4(s,r,s,s,s,s,B.ae),s,s,s,s,s,s,s)}}
 A.xP.prototype={
-I(a){var s=null,r=t.p,q=A.iS(B.cv,A.a([A.ayv(B.o,75),A.azl("logiquick-logo.png",150,150)],r),B.Y,B.cd,s),p=A.a9(s,20,s),o=A.axJ().$3$color$fontSize$fontWeight($.cI(),60,B.L)
+I(a){var s=null,r=t.p,q=A.iS(B.cv,A.a([A.ayv(B.o,75),A.azl("assets/logiquick-logo.png",150,150)],r),B.Y,B.cd,s),p=A.a9(s,20,s),o=A.axJ().$3$color$fontSize$fontWeight($.cI(),60,B.L)
 return A.bh(s,A.c6(A.a([q,p,A.Lr(A.ahZ(s,s,s,B.cg,s,s,!0,s,A.cF(A.a([A.cF(s,A.axJ().$3$color$fontSize$fontWeight(B.o,60,B.L),"Quick")],t.VO),o,"Logi"),B.ap,s,s,B.am,B.b7),B.hm)],r),B.B,B.w,B.x),B.q,s,s,s,s,s,s,new A.aq(20,0,20,0),s,s,s)}}
 A.xQ.prototype={
 aj(){return new A.Vo(null,null)}}
