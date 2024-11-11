@@ -1,4 +1,6 @@
+import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/history_datasource.dart';
+import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:flutter/material.dart';
 
 
@@ -56,6 +58,12 @@ class HistoryTramites extends StatelessWidget {
                             style:
                                 TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                       ),
+                      Spacer(),
+                      CustomOutlinedButton(
+                        onPressed: (){},
+                        text: 'Nuevo Tramite',
+                        isFilled: true,
+                        color: CustomColor.buttons,)
                     ],
                   ),
                   rowsPerPage: 5,
