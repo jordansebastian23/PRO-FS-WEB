@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
+import 'package:feriaweb/ui/cards/custom_card_procedures_details.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HistoryDatasource extends DataTableSource {
   late BuildContext context;
@@ -46,53 +48,109 @@ class HistoryDatasource extends DataTableSource {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Detalles de tramite - Numero de carga ${index + 100}'),
+          backgroundColor: Colors.white,
+          title: Text('Detalles'),
+          titleTextStyle: GoogleFonts.inter(
+            fontSize: 20,
+            fontWeight: FontWeight.w500,
+            
+          ),
           content: SingleChildScrollView(
             child: Container(
-              width: 300,
+              width: 540,
               child: ListBody(
                 children: <Widget>[
-                  Text('05/10/2021'),
-                  Text('202'),
-                  Text('202'),
-                  Text('LCL Directo'),
-                  Text('Matias Gonzales R.'),
-                  Text('factura.pdf'),
-                  Text('Pendiente'),
-                  Row(
-                    children: [
-                      Text('Estado: Completado'),
-                      SizedBox(width: 10),
-                      TextButton(onPressed: (){},
-                      child: Text('Notificar', style: TextStyle(color: Colors.teal),),
-                      ),
-                    ],
+                  Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        CustomCardProceduresDetails(
+                          icon: Icons.calendar_today,
+                          bgColor: Colors.blueAccent,
+                          title: 'Trámite N°: 122',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Boleta de pago.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Archivo de retiro.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Carnet.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Carnet Conductor.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Archivo Aduana.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        SizedBox(height: 10)
+                        ,CustomCardProceduresDetails(
+                          icon: Icons.picture_as_pdf_outlined,
+                          bgColor: CustomColor.details,
+                          showButtons: true,
+                          title: 'Archivo de visado.pdf',
+                          subTitle: 'ID Destinatario: 122',
+                        ),
+                        
+                      ],
+                    ),
                   ),
-                  //Método de pago
-                  Text('Tarjeta: **** 1234'),
-                  // Agrega más detalles según sea necesario
+                  
                 ],
               ),
             ),
           ),
           actions: <Widget>[
             
-            CustomOutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _showEditDialog(context, index);
-              },
-              text: 'Editar',
-              isFilled: true,
-              color: CustomColor.buttons,
-            ),
-            CustomOutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              text: 'Cerrar',
-              isFilled: true,
-              color: CustomColor.buttons,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomOutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _showEditDialog(context, index);
+                  },
+                  text: 'Editar',
+                  isFilled: true,
+                  color: CustomColor.buttons,
+                ),
+                SizedBox(width: 10),
+                CustomOutlinedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  text: 'Cerrar',
+                  isFilled: true,
+                  color: CustomColor.buttons,
+                ),
+              ],
             ),
           ],
         );

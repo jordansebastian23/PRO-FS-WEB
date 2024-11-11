@@ -1,7 +1,7 @@
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/ui/views/agent/carga_view.dart';
-import 'package:feriaweb/ui/views/agent/history_.dart';
+import 'package:feriaweb/ui/views/agent/history_procedures.dart';
 import 'package:feriaweb/ui/views/agent/nofity_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
 import 'package:feriaweb/ui/views/agent/archives_uppload.dart';
