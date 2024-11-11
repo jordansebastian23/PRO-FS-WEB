@@ -3,6 +3,8 @@ import 'package:feriaweb/ui/layouts/dashboard/dashboard_layout.dart';
 import 'package:feriaweb/ui/layouts/splash/splash_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/providers/auth_provider.dart';
@@ -16,7 +18,8 @@ void main() async {
 
   await LocalStorage.configurePrefs();
   Flurorouter.configureRoutes();
-  runApp(AppState());
+  
+  initializeDateFormatting().then((_) => runApp(AppState()));
 }
  
 class AppState extends StatelessWidget {
@@ -43,8 +46,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      locale: Locale('es', 'ES'), // Configura la localización a español
+      supportedLocales: [
+        const Locale('en', 'US'),
+        const Locale('es', 'ES'),
+      ],
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      
       debugShowCheckedModeBanner: false,
-      title: 'Admin Dashboard',
+      title: 'LogiQuick | FESW 2024',
       initialRoute: '/',
       onGenerateRoute: Flurorouter.router.generator,
       navigatorKey: NavigationService.navigatorKey,
@@ -65,7 +79,7 @@ class MyApp extends StatelessWidget {
       },
       theme: ThemeData.light().copyWith(
         scrollbarTheme: ScrollbarThemeData().copyWith(
-          thumbColor: MaterialStateProperty.all(
+          thumbColor: WidgetStateProperty.all(
             Colors.grey.withOpacity(0.5)
           )
         )
