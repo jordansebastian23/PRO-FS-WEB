@@ -11,14 +11,7 @@ class BackgroundLogiQuick extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 100,
-              child: Image(
-                image: AssetImage('logiquick-logo.png'),
-                width: 400,
-              ),
-            ),
+            
           ),
         ),
       ),
@@ -28,7 +21,9 @@ class BackgroundLogiQuick extends StatelessWidget {
   BoxDecoration buildBoxDecoration() {
     return BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('FondoLogin.png'),
+          opacity: 0.2,
+          
+          image: AssetImage('assets/Fondo.webp'),
           fit: BoxFit.cover
         )
     );

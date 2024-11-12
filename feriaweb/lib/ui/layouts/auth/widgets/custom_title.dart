@@ -17,7 +17,7 @@ class CustomTitle extends StatelessWidget {
                 radius: 75,
               ),  
               Image.asset(
-                'logiquick-logo.png',
+                'assets/logiquick-logo.png',
                 width: 150,
                 height: 150,
               ),

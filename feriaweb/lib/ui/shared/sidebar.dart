@@ -29,7 +29,7 @@ class SideBar extends StatelessWidget {
           SizedBox(height: 50),
           TextSeparator(text: 'Menu'),
           MenuItem(
-              text: 'Panel de control',
+              text: 'Administrar Usuarios',
               icon: Icons.home,
               isActive: sidemenuProvider.currentPage == Flurorouter.dashboardRoute,
               onPressed: () {
@@ -48,6 +48,13 @@ class SideBar extends StatelessWidget {
               isActive: sidemenuProvider.currentPage == Flurorouter.aSubidosRoute,
               onPressed: () {
                 navigateTo(Flurorouter.aSubidosRoute);
+              }),
+          MenuItem(
+              text: 'Gestionar Cargas',
+              icon: Icons.view_in_ar_outlined,
+              isActive: sidemenuProvider.currentPage == Flurorouter.gCargasRoute,
+              onPressed: () {
+                navigateTo(Flurorouter.gCargasRoute);
               }),
           MenuItem(
               text: 'Historial de Tramites',
@@ -84,7 +91,9 @@ class SideBar extends StatelessWidget {
   }
 
   BoxDecoration buildBoxDecoration() =>
-      BoxDecoration(color: CustomColor.background, boxShadow: [
+      BoxDecoration(color: CustomColor.background,
+      borderRadius: BorderRadius.only(topRight: Radius.circular(25), ),
+      boxShadow: [
         BoxShadow(
           color: Colors.black26,
           blurRadius: 26,

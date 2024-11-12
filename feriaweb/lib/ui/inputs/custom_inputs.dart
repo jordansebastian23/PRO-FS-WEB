@@ -18,7 +18,7 @@ class CustomInputs {
         borderSide: BorderSide(color: colorBorder)
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: const Color.fromARGB(255, 0, 0, 255))
+        borderSide: BorderSide(color: CustomColor.buttons)
       ),
       hintText: hint,
       labelText: label,
@@ -60,6 +60,34 @@ class CustomInputs {
     Color colorBorder = Colors.white,
   }){
     return InputDecoration(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: colorBorder)
+      ),
+      enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: colorBorder)
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: CustomColor.buttons)
+      ),
+      hintText: hint,
+      labelText: label,
+      labelStyle: TextStyle( color: Colors.grey ),
+      hintStyle: TextStyle( color: Colors.grey ),
+    );
+  }
+
+
+    static InputDecoration searchBar({
+    required String hint,
+    required String label,
+    required IconData icon,
+    Color colorBorder = Colors.white,
+  }){
+    return InputDecoration(
+      prefixIcon: Icon( icon, color: Colors.grey ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: BorderSide(color: colorBorder)

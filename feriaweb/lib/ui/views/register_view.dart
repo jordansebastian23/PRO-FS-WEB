@@ -27,7 +27,7 @@ class RegisterView extends StatelessWidget {
             child: ConstrainedBox(
               constraints: BoxConstraints( maxWidth: 370 ),
               child: Form(
-                autovalidateMode: AutovalidateMode.always,
+                autovalidateMode: AutovalidateMode.disabled,
                 key: registerFormProvider.formKey,
                 child: Column(
                   children: [
@@ -43,6 +43,7 @@ class RegisterView extends StatelessWidget {
                         return null;
                       },
                       style: TextStyle(color: Colors.white),
+                      cursorColor: CustomColor.buttons,
                       decoration: CustomImputs.loginInputStyle(
                         hint: 'Ingrese su nombre',
                         label: 'Nombre',
@@ -52,6 +53,7 @@ class RegisterView extends StatelessWidget {
                     SizedBox(height: 10),
                     //Email
                     TextFormField(
+                      cursorColor: CustomColor.buttons,
                       validator: (value) {
                             //libreria email_validator
                             if ( !EmailValidator.validate(value ?? '') ) return 'Email no valido';
@@ -68,6 +70,7 @@ class RegisterView extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      cursorColor: CustomColor.buttons,
                       onChanged: (value) => registerFormProvider.phone = value,
 
                           validator: (value) {
@@ -85,6 +88,7 @@ class RegisterView extends StatelessWidget {
                     SizedBox(height: 10),
                     //password
                     TextFormField(
+                      cursorColor: CustomColor.buttons,
                       onChanged: (value) => registerFormProvider.password = value,
 
                           validator: ( value ) {
@@ -102,6 +106,7 @@ class RegisterView extends StatelessWidget {
                     ),
                     SizedBox(height: 10),
                     TextFormField(
+                      cursorColor: CustomColor.buttons,
                       onChanged: (value) => registerFormProvider.password = value,
 
                           validator: ( value ) {

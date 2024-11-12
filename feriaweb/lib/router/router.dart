@@ -19,6 +19,7 @@ class Flurorouter {
   static String pRealizadosRoute = '/dashboard/pagos-pendientes';
   static String aSubidosRoute = '/dashboard/archivos-subidos';
   static String hTramitesRoute = '/dashboard/historial-tramites';
+  static String gCargasRoute = '/dashboard/gestion-cargas';
 
   //Dashboard opciones
   static String notifyRoute = '/dashboard/notificaciones';
@@ -42,6 +43,7 @@ class Flurorouter {
     router.define(pRealizadosRoute, handler: DashboardHandlers.pRealizados, transitionType: TransitionType.none );
     router.define(aSubidosRoute, handler: DashboardHandlers.aSubidos, transitionType: TransitionType.none );
     router.define(hTramitesRoute, handler: DashboardHandlers.hTramites, transitionType: TransitionType.none );
+    router.define(gCargasRoute, handler: DashboardHandlers.gCargas, transitionType: TransitionType.none );
     router.define(notifyRoute, handler: DashboardHandlers.notify, transitionType: TransitionType.none );
     router.define(configRoute, handler: DashboardHandlers.config, transitionType: TransitionType.none );
 
