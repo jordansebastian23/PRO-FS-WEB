@@ -21,25 +21,27 @@ class AutenticacionGoogle{
       user = userCredential.user;
     
     if (user != null) {
-      final token = await _checkOrCreateUserInDjango(user);
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
-      await prefs.setString('loginType', 'google');
-      await SessionManager.login(token); // Update authentication status
-      // Check user role in Django
-      final userData = await LoginService.getUserData();
-      print(userData);
-      if (userData['roles'] != null && userData['roles'].contains('Visado')) {
-        onSuccess();
-      } else {
-        onError('User does not have the required "Visado" role.');
+        // Temporarily hold the token until we verify the role
+        final tempToken = await _checkOrCreateUserInDjango(user);
+
+        // Check user role in Django
+        final userData = await LoginService.getUserData(tempToken);
+        if (userData['roles'] != null && userData['roles'].contains('Visado')) {
+          // Save the token only if the user has the required role
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString('token', tempToken);
+          prefs.setString('loginType', 'google');
+          await SessionManager.login(tempToken);
+          
+          onSuccess();
+        } else {
+          onError('User does not have the required "Visado" role.');
+        }
       }
+    } catch (e) {
+      onError("Error in Google Authentication: $e");
     }
-    return null;
-  } catch (e) {
-    print('Error in Google Authentication: $e');
-    return null;
-  }
+    return null;	
   }
 
   Future<void> logoutGoogleUser() async {

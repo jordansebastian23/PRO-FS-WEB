@@ -24,60 +24,47 @@ class LoginService {
     );
 
     if (response.statusCode == 200) {
-      // Save the session cookie
       final responseData = jsonDecode(response.body);
-      
-      // Debug print to verify response fields
-      print("Login response data: $responseData");
+      final tempToken = responseData['token'];
 
-      // Store the token for authenticated requests
-      final prefs = await SharedPreferences.getInstance();
-      if (responseData['token'] != null) {
-        prefs.setString('token', responseData['token']);
-        prefs.setString('loginType', 'credentials');
-        await SessionManager.login(responseData['token']); // Ensure authenticated status is updated
-      } else {
+      if (tempToken == null) {
         onError("Login failed: Token not found in response.");
         return {};
       }
-      // Fetch user data to check the role
-      final userData = await getUserData();
-      print(userData);  
+
+      // Fetch user data to check if they have the "Visado" role
+      final userData = await getUserData(tempToken);
       if (userData['roles'] != null && userData['roles'].contains('Visado')) {
+        // Save the token only if the user has the required role
+        final prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', tempToken);
+        prefs.setString('loginType', 'credentials');
+        await SessionManager.login(tempToken);
+        
         onSuccess();
       } else {
         onError('User does not have the required "Visado" role.');
       }
-
-      } else {
+    } else {
       onError("Invalid email or password.");
     }
-
     return {};
-    
   }
+    
 
-  static Future<Map<String, dynamic>> getUserData() async {
+  static Future<Map<String, dynamic>> getUserData(String token) async {
     final url = Uri.parse('http://192.168.1.90:8000/get_user_details/');
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token') ?? '';
-
-    if (token.isEmpty) {
-      throw Exception("Token not found in SharedPreferences.");
-    }
-
     final response = await http.get(
       url,
       headers: {
         'Content-Type': 'application/json',
-        'X-Auth-Token': token,  // Use custom header
+        'X-Auth-Token': token,
       },
     );
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      print("Failed to fetch user data: ${response.statusCode} ${response.body}");
       throw Exception('Failed to fetch user data');
     }
   }
