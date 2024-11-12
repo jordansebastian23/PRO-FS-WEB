@@ -135,9 +135,9 @@ class HistoryDatasource extends DataTableSource {
                 CustomOutlinedButton(
                   onPressed: () {
                     Navigator.of(context).pop();
-                    _showEditDialog(context, index);
+                    
                   },
-                  text: 'Editar',
+                  text: 'Cerrar',
                   isFilled: true,
                   color: CustomColor.buttons,
                 ),
@@ -146,7 +146,7 @@ class HistoryDatasource extends DataTableSource {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  text: 'Cerrar',
+                  text: 'Confirmar',
                   isFilled: true,
                   color: CustomColor.buttons,
                 ),

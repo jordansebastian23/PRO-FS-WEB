@@ -2,11 +2,12 @@ import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/history_datasource.dart';
 import 'package:feriaweb/ui/buttons/custom_icontext_button.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
+import 'package:feriaweb/ui/buttons/custom_radio_archives.dart';
+import 'package:feriaweb/ui/buttons/custom_radio_selectprocedure.dart';
 import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-
 
 class User {
   final String nombre;
@@ -14,8 +15,6 @@ class User {
 
   User({required this.nombre, required this.correo});
 }
-
-
 
 class HistoryTramites extends StatefulWidget {
   const HistoryTramites({super.key});
@@ -25,8 +24,9 @@ class HistoryTramites extends StatefulWidget {
 }
 
 class _HistoryTramitesState extends State<HistoryTramites> {
-
-   DateTime? _selectedDate;
+  int _selectedRadio = 1;
+  int _selectedRadio2 = 1;
+  DateTime? _selectedDate;
   DateTime? _selectedDateRetiro;
   User? selectedUser;
   final TextEditingController _searchController = TextEditingController();
@@ -127,11 +127,11 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                               });
                             }),
                         CustomIcontextButton(
-                            title: 'Crear Nueva carga',
+                            title: 'Crear Nuevo Tramite',
                             color: CustomColor.buttons,
                             icon: Icons.add,
                             onPressed: () {
-                              _newCarga(context);
+                              _newTramite(context);
                             }),
                       ],
                     )
@@ -158,7 +158,6 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                     DataColumn(
                         label: Text('Estado de tramite',
                             style: TextStyle(fontWeight: FontWeight.bold))),
-                    
                     DataColumn(
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),
@@ -170,8 +169,8 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                       FittedBox(
                         fit: BoxFit.contain,
                         child: Text('Historial de Tramites',
-                            style:
-                                TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 24)),
                       ),
                     ],
                   ),
@@ -185,9 +184,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
     );
   }
 
-
-
-    void _newCarga(BuildContext context) {
+  void _newTramite(BuildContext context) {
     String? amount;
 
     showDialog(
@@ -200,168 +197,250 @@ class _HistoryTramitesState extends State<HistoryTramites> {
               content: SingleChildScrollView(
                 child: Container(
                   width: 800,
-                  child: Row(
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 400,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 5),
+                          SizedBox(
+                            width: 300,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Seleccionar Usuario: ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione un usuario',
-                                      label: selectedUser != null
-                                          ? selectedUser!.nombre
-                                          : 'Selecciona un usuario',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.search),
-                                  onPressed: () async {
-                                    _showUserSelectionDialog(context, setState);
+                                Text('Seleccione el tipo de carga',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16)),
+                                SizedBox(height: 5),
+                                CustomRadioSelectprocedure(
+                                  title: 'Contenedor de Carga Completa',
+                                  subTitle: '[FCL] Directo',
+                                  value: 1,
+                                  groupValue: _selectedRadio,
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio = value!;
+                                    });
                                   },
                                 ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text('Fecha de creacion: ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione una fecha',
-                                      label: _selectedDateRetiro != null
-                                          ? DateFormat('yyyy-MM-dd')
-                                              .format(_selectedDateRetiro!)
-                                          : 'Selecciona una fecha',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.calendar_today),
-                                  onPressed: () async {
-                                    await _selectDate(context);
-                                    setState(() {});
+                                SizedBox(height: 5),
+                                CustomRadioSelectprocedure(
+                                  title: 'Contenedor de Carga Completa',
+                                  subTitle: '[FCL] Indirecto',
+                                  value: 2,
+                                  groupValue: _selectedRadio,
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio = value!;
+                                    });
                                   },
                                 ),
+                                SizedBox(height: 5),
+                                CustomRadioSelectprocedure(
+                                  title: 'Carga Inferior a un Contenedor',
+                                  subTitle: '[LCL] Directo',
+                                  value: 3,
+                                  groupValue: _selectedRadio,
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio = value!;
+                                    });
+                                  },
+                                ),
+                                SizedBox(height: 5),
+                                CustomRadioSelectprocedure(
+                                  title: 'Carga Inferior a un Contenedor',
+                                  subTitle: '[LCL] Indirecto',
+                                  value: 4,
+                                  groupValue: _selectedRadio,
+                                  onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio = value!;
+                                    });
+                                  },
+                                )
                               ],
                             ),
-                            SizedBox(height: 10),
-                            Row(
+                          ),
+                          SizedBox(width: 40),
+                          Container(
+                            width: 10,
+                            height: 150,
+                            child: VerticalDivider(
+                              color: Colors.black,
+                              thickness: 2,
+                            ),
+                          ),
+                          SizedBox(width: 40),
+                          Container(
+                            width: 400,
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('Fecha de retiro:   ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione una fecha',
-                                      label: _selectedDateRetiro != null
-                                          ? DateFormat('yyyy-MM-dd')
-                                              .format(_selectedDateRetiro!)
-                                          : 'Selecciona una fecha',
+                                Text('Datos de la carga',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16)),
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.search),
+                                      onPressed: () async {
+                                        _showUserSelectionDialog(context, setState);
+                                      },
                                     ),
-                                  ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: TextField(
+                                        enabled: false,
+                                        decoration: CustomInputs.createUser(
+                                          hint: 'Seleccione un usuario',
+                                          label: selectedUser != null
+                                              ? selectedUser!.nombre
+                                              : 'Selecciona un usuario',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.calendar_today),
-                                  onPressed: () async {
-                                    await _selectDate(context);
-                                    setState(() {});
-                                  },
+                                SizedBox(height: 10),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.calendar_today),
+                                      onPressed: () async {
+                                        await _selectDate(context);
+                                        setState(() {});
+                                      },
+                                    ),
+                                    SizedBox(
+                                      width: 200,
+                                      child: TextField(
+                                        enabled: false,
+                                        decoration: CustomInputs.createUser(
+                                          hint: 'Seleccione una fecha',
+                                          label: _selectedDateRetiro != null
+                                              ? DateFormat('yyyy-MM-dd')
+                                                  .format(_selectedDateRetiro!)
+                                              : 'Selecciona una fecha',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
+                                
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 40),
-                      Container(
-                        width: 10,
-                        height: 100,
-                        child: VerticalDivider(
-                          color: Colors.black,
-                          thickness: 2,
-                          indent: 20,
-                          endIndent: 20,
-                        ),
+                      SizedBox(height: 20),
+                      //Archivos
+                      Divider(
+                        color: Colors.black,
+                        thickness: 1,
+                        indent: 20,
+                        endIndent: 20,
                       ),
-                      SizedBox(width: 5),
-                      SizedBox(
-                        width: 300,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Ingresa monto [\$CLP]',
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400, fontSize: 13),
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(
-                              width: 200,
-                              height: 43,
-                              child: TextFormField(
-                                decoration: CustomInputs.createUser(
-                                  colorBorder: Colors.black,
-                                  hint: 'Ingresa el monto',
-                                  label: 'Monto',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) {
-                                  amount = value;
-                                },
+                      SizedBox(height: 10),
+                      Text('Archivos Requeridos',
+                                    style: GoogleFonts.inter(
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: 16)),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          SizedBox(width: 20),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomRadioSelectArchives(
+                                title: 'Boleta de pago.pdf',
+                                subTitle: 'Boleta de pago de la carga',
+                                value: 1,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Ingrese descripción',
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400, fontSize: 13),
-                            ),
-                            SizedBox(
-                              width: 200,
-                              height: 100,
-                              child: TextFormField(
-                                decoration: CustomInputs.createUser(
-                                  colorBorder: Colors.black,
-                                  hint: 'Ingresa la descripción',
-                                  label: 'Descripción',
-                                ),
-                                keyboardType: TextInputType.multiline,
-                                maxLines: 5,
+                              SizedBox(height: 10),
+                              CustomRadioSelectArchives(
+                                title: 'Archivo de retiro.pdf',
+                                subTitle: 'Archivo que acredite el retiro de la carga',
+                                value: 2,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
                               ),
-                            )
-                          ],
-                        ),
+                              SizedBox(height: 10),
+                              CustomRadioSelectArchives(
+                                title: 'Carnet.pdf',
+                                subTitle: 'Cédula de identidad',
+                                value: 3,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 20),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CustomRadioSelectArchives(
+                                title: 'Carnet de Conductor.pdf',
+                                subTitle: 'Cédula de identidad',
+                                value: 4,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
+                              ),
+                              SizedBox(height: 10),
+                              CustomRadioSelectArchives(
+                                title: 'Archivo de Información de Aduanas.pdf',
+                                subTitle: 'Archivo con Información de Aduanas',
+                                value: 5,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
+                              ),
+                              SizedBox(height: 10),
+                              CustomRadioSelectArchives(
+                                title: 'Archivo de Visado.pdf',
+                                subTitle: 'Archivo con visado de la carga',
+                                value: 6,
+                                groupValue: _selectedRadio2,
+                                onChanged: (int? value) {
+                                    setState(() {
+                                      _selectedRadio2 = value!;
+                                    });
+                                  },
+                              ),
+                            ],
+                          ),
+                        ],
                       )
                     ],
                   ),
@@ -385,7 +464,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                   style: TextButton.styleFrom(
                     backgroundColor: CustomColor.buttons,
                   ),
-                  child: Text('Crear Carga',
+                  child: Text('Crear Tramite',
                       style: GoogleFonts.inter(
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
@@ -403,46 +482,48 @@ class _HistoryTramitesState extends State<HistoryTramites> {
   }
 
   void _showConfirmCreationCarga(BuildContext contex) {
-    showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Text('Confirmar creación de carga'),
-        content: Text('¿Estás seguro de que deseas crear esta carga?'),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: CustomColor.buttons,
-                      ),
-                      child: Text('Cancelar',
-                          style: GoogleFonts.inter(
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                              fontSize: 16)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Confirmar creación de carga'),
+            content: Text('¿Estás seguro de que deseas crear esta carga?'),
+            actions: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: CustomColor.buttons,
                     ),
-                    SizedBox(width: 10),
-                    TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: CustomColor.buttons,
+                    child: Text('Cancelar',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
                   ),
-                  child: Text('Confirmar',
-                      style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                          fontSize: 16)),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+                  SizedBox(width: 10),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: CustomColor.buttons,
+                    ),
+                    child: Text('Confirmar',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
             ],
-          ),
-        ],
-      );
-    });
+          );
+        });
   }
 
   void _showUserSelectionDialog(BuildContext context, StateSetter setState) {
@@ -583,10 +664,8 @@ class _HistoryTramitesState extends State<HistoryTramites> {
   }
 
   BoxDecoration buildBoxDecoration() => BoxDecoration(
-    color: Colors.white,
-    border: Border.all(color: Colors.black,
-        width: 1),
-    borderRadius: BorderRadius.circular(20),
-          
-          );
+        color: Colors.white,
+        border: Border.all(color: Colors.black, width: 1),
+        borderRadius: BorderRadius.circular(20),
+      );
 }
