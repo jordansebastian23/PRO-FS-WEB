@@ -292,7 +292,8 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                     IconButton(
                                       icon: Icon(Icons.search),
                                       onPressed: () async {
-                                        _showUserSelectionDialog(context, setState);
+                                        _showUserSelectionDialog(
+                                            context, setState);
                                       },
                                     ),
                                     SizedBox(
@@ -334,7 +335,6 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                     ),
                                   ],
                                 ),
-                                
                               ],
                             ),
                           ),
@@ -350,9 +350,8 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                       ),
                       SizedBox(height: 10),
                       Text('Archivos Requeridos',
-                                    style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 16)),
+                          style: GoogleFonts.inter(
+                              fontWeight: FontWeight.w400, fontSize: 16)),
                       SizedBox(height: 10),
                       Row(
                         children: [
@@ -367,22 +366,23 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 value: 1,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                               SizedBox(height: 10),
                               CustomRadioSelectArchives(
                                 title: 'Archivo de retiro.pdf',
-                                subTitle: 'Archivo que acredite el retiro de la carga',
+                                subTitle:
+                                    'Archivo que acredite el retiro de la carga',
                                 value: 2,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                               SizedBox(height: 10),
                               CustomRadioSelectArchives(
@@ -391,10 +391,10 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 value: 3,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                             ],
                           ),
@@ -409,10 +409,10 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 value: 4,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                               SizedBox(height: 10),
                               CustomRadioSelectArchives(
@@ -421,10 +421,10 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 value: 5,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                               SizedBox(height: 10),
                               CustomRadioSelectArchives(
@@ -433,10 +433,10 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 value: 6,
                                 groupValue: _selectedRadio2,
                                 onChanged: (int? value) {
-                                    setState(() {
-                                      _selectedRadio2 = value!;
-                                    });
-                                  },
+                                  setState(() {
+                                    _selectedRadio2 = value!;
+                                  });
+                                },
                               ),
                             ],
                           ),
