@@ -23,7 +23,7 @@ class BackgroundLogiQuick extends StatelessWidget {
         image: DecorationImage(
           opacity: 0.2,
           
-          image: AssetImage('assets/Fondo.webp'),
+          image: AssetImage('assets/Fondologin.png'),
           fit: BoxFit.cover
         )
     );

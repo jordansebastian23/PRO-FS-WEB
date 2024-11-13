@@ -1,10 +1,7 @@
-import 'dart:math';
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/services/tramite_view.dart';
-import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/cards/custom_card_procedures_details.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
