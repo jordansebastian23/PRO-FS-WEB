@@ -7,9 +7,7 @@ class TramiteService {
 
   /// Method to create a new Tramite
   static Future<Map<String, dynamic>> createTramite({
-    required String token,
-    required String titulo,
-    required String descripcion,
+    required String tipo_tramite,
     required String usuarioDestino,
     required int cargaId,
     required List<int> fileTypeIds,
@@ -24,8 +22,7 @@ class TramiteService {
         'X-Auth-Token': token,
       },
       body: jsonEncode({
-        'titulo': titulo,
-        'descripcion': descripcion,
+        'tipo_tramite': tipo_tramite,
         'usuario_destino': usuarioDestino,
         'carga_id': cargaId,
         'file_type_ids': fileTypeIds,
@@ -67,7 +64,6 @@ class TramiteService {
 
   /// Method to mark a Tramite as successful after all files are approved
   static Future<Map<String, dynamic>> markTramiteSuccessful({
-    required String token,
     required int tramiteId,
     required String fechaTermino,
   }) async {
@@ -92,4 +88,78 @@ class TramiteService {
       throw Exception('Failed to mark tramite as successful: ${response.body}');
     }
   }
+
+  // Method to fetch all Tramites
+  static Future<List<dynamic>> fetchTramites() async {
+    final url = Uri.parse('$baseUrl/list_tramites/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.get(
+      url,
+      headers: {
+        'X-Auth-Token': token,
+      }
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      return responseBody['tramites'] as List<dynamic>;
+    } else {
+      throw Exception('Failed to load tramites: ${response.body}');
+    }
+  }
+
+  // get tramite files
+  static Future<List<dynamic>> fetchRequiredFiles(int tramiteId) async {
+    final url = Uri.parse('$baseUrl/check_tramite_files/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': token,
+      },
+      body: jsonEncode({
+        'id_tramite': tramiteId,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      return responseBody['required_files'] as List<dynamic>;
+    } else {
+      throw Exception('Failed to fetch tramite files: ${response.body}');
+    }
+  }
+
+  static Future<void> approveFile(int archivoId) async {
+    final url = Uri.parse('$baseUrl/approve_archivo/$archivoId/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.post(
+      url,
+      headers: {'X-Auth-Token': token},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to approve file: ${response.body}');
+    }
+  }
+
+  static Future<void> rejectFile(int archivoId) async {
+    final url = Uri.parse('$baseUrl/reject_archivo/$archivoId/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.post(
+      url,
+      headers: {'X-Auth-Token': token},
+      body: jsonEncode({'feedback': 'Some rejection feedback'}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to reject file: ${response.body}');
+    }
+  }
+
 }
