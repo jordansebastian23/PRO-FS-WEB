@@ -1,14 +1,16 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class PagosService {
   static const String baseUrl = 'http://192.168.1.90:8000';
-  static Future<Map<String, dynamic>> fetchPagos() async {
+  static Future<List<dynamic>> fetchPagos() async {
     final url = Uri.parse('$baseUrl/list_pagos/');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      return responseBody['pagos'] as List<dynamic>;
     } else {
       throw Exception('Failed to load pagos: ${response.body}');
     }
@@ -30,10 +32,13 @@ class PagosService {
     required int monto,
   }) async {
     final url = Uri.parse('$baseUrl/create_pago/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
     final response = await http.post(
       url,
       headers: {
         'Content-Type': 'application/json',
+        'X-Auth-Token': token,
       },
       body: jsonEncode({
         'email': email,

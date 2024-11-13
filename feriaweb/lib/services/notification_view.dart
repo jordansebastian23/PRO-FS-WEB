@@ -12,6 +12,7 @@ class NotificationService {
     required String token,  // Pass the token as a parameter
   }) async {
     final url = Uri.parse('$baseUrl/create_notification/');
+    
     final response = await http.post(
       url,
       headers: {

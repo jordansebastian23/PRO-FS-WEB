@@ -1,39 +1,24 @@
-import 'dart:math';
-import 'package:feriaweb/constants/colors.dart';
-import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:flutter/material.dart';
 
 class PaymentsDatasource extends DataTableSource {
-  late BuildContext context;
-  PaymentsDatasource(this.context);
+  final BuildContext context;
+  final List<dynamic> pagos;
+
+  PaymentsDatasource(this.context, this.pagos);
+
   @override
   DataRow? getRow(int index) {
+    assert(index >= 0);
+    if (index >= pagos.length) return null;
+    final pago = pagos[index];
     return DataRow.byIndex(
       index: index,
       cells: [
-        DataCell(Text('0' + (index + 1).toString(),
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('' + (index + 100).toString(),
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('Carga Suelta',
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text(
-            'Matias Gonzales R.'.length > 14
-                ? 'Matias Gonzales R.'.substring(0, 14) + '...'
-                : 'Matias Gonzales R.',
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('CLP\$' + Random().nextInt(1000000).toString(),
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Text('Completado',
-            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))),
-        DataCell(Row(
-          children: [
-            Icon(Icons.credit_card_outlined, size: 20, color: Colors.black),
-            SizedBox(width: 2),
-            Text('**** 1234',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14)),
-          ],
-        )),
+        DataCell(Text(pago['id'].toString())),
+        DataCell(Text(pago['usuario'] ?? '')),
+        DataCell(Text(pago['monto'].toString())),
+        DataCell(Text(pago['fecha_creacion'] ?? '')),
+        DataCell(Text(pago['estado'] ?? '')),
         DataCell(TextButton(
           onPressed: () {
             _showDetailsDialog(context, index);
@@ -46,131 +31,30 @@ class PaymentsDatasource extends DataTableSource {
   }
 
   void _showDetailsDialog(context, int index) {
+    final pago = pagos[index];
     showDialog(
       barrierColor: Colors.black.withOpacity(0.2),
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Detalles del Pago - Numero de carga ${index + 100}'),
+          title: Text('Detalles del Pago'),
           content: SingleChildScrollView(
-            child: Container(
-              width: 300,
-              child: ListBody(
-                children: <Widget>[
-                  //Fecha de creación
-                  Text('Fecha: ${DateTime.now().toString()}'),
-                  //ID del usuario
-                  Text('ID usuario: 0' + (index + 1).toString()),
-                  //Correo del usuario
-                  Text('Correo: boladios@logiquick.com'),
-                  //Número de carga
-                  Text('Numero Carga: ' + (index + 100).toString()),
-                  //Tipo de carga
-                  Text('Carga Suelta'),
-                  //Nombre del destinatario
-                  Text('Nombre: Matias Gonzales R.'),
-                  //Monto a pagar
-                  Text('Monto: CLP\$${Random().nextInt(1000000)}'),
-                  //Estado del pago
-                  Row(
-                    children: [
-                      Text('Estado: Completado'),
-                      SizedBox(width: 10),
-                      TextButton(onPressed: (){},
-                      child: Text('Notificar', style: TextStyle(color: Colors.teal),),
-                      ),
-                    ],
-                  ),
-                  //Método de pago
-                  Text('Tarjeta: **** 1234'),
-                  // Agrega más detalles según sea necesario
-                ],
-              ),
+            child: ListBody(
+              children: <Widget>[
+                Text('ID: ${pago['id']}'),
+                Text('Usuario: ${pago['usuario']}'),
+                Text('Monto: ${pago['monto']}'),
+                Text('Fecha de Creación: ${pago['fecha_creacion']}'),
+                Text('Estado: ${pago['estado']}'),
+              ],
             ),
           ),
           actions: <Widget>[
-            
-            CustomOutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                _showEditDialog(context, index);
-              },
-              text: 'Editar',
-              isFilled: true,
-              color: CustomColor.buttons,
-            ),
-            CustomOutlinedButton(
+            TextButton(
+              child: Text('Cerrar'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              text: 'Cerrar',
-              isFilled: true,
-              color: CustomColor.buttons,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showEditDialog(BuildContext context, int index) {
-    showDialog(
-      barrierColor: Colors.black.withOpacity(0.2),
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Editar Pago'),
-          content: SingleChildScrollView(
-            child: Container(
-              width: 300,
-              child: Column(
-                children: <Widget>[
-                  TextField(
-                    decoration: InputDecoration(
-                      //labelText: 'Nombre',
-                      hintText: 'Matias Gonzales R.',
-                    ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Monto',
-                      hintText: 'CLP\$${Random().nextInt(1000000)}',
-                    ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Estado',
-                      hintText: 'Completado',
-                    ),
-                  ),
-                  TextField(
-                    decoration: InputDecoration(
-                      labelText: 'Tarjeta',
-                      hintText: '**** 1234',
-                    ),
-                  ),
-                  // Agrega más campos según sea necesario
-                ],
-              ),
-            ),
-          ),
-          actions: <Widget>[
-            CustomOutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                //_showEditDialog(context, index);
-              },
-              text: 'Cerrar',
-              isFilled: true,
-              color: CustomColor.buttons,
-            ),
-            CustomOutlinedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              text: 'Guardar',
-              isFilled: true,
-              color: CustomColor.buttons,
             ),
           ],
         );
@@ -182,7 +66,7 @@ class PaymentsDatasource extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 1000;
+  int get rowCount => pagos.length;
 
   @override
   int get selectedRowCount => 0;

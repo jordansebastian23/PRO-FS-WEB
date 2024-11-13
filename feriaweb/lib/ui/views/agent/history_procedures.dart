@@ -1,6 +1,7 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/history_datasource.dart';
 import 'package:feriaweb/ui/buttons/custom_icontext_button.dart';
+import 'package:feriaweb/ui/buttons/custom_multiselector_archives.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/buttons/custom_radio_archives.dart';
 import 'package:feriaweb/ui/buttons/custom_radio_selectprocedure.dart';
@@ -25,7 +26,7 @@ class HistoryTramites extends StatefulWidget {
 
 class _HistoryTramitesState extends State<HistoryTramites> {
   int _selectedRadio = 1;
-  int _selectedRadio2 = 1;
+  List<int> _selectedValues = [];
   DateTime? _selectedDate;
   DateTime? _selectedDateRetiro;
   User? selectedUser;
@@ -38,6 +39,15 @@ class _HistoryTramitesState extends State<HistoryTramites> {
     User(nombre: 'Usuario 2', correo: 'usuario2@example.com'),
     User(nombre: 'Usuario 3', correo: 'usuario3@example.com'),
     User(nombre: 'Usuario 4', correo: 'usuario4@example.com'),
+  ];
+
+  List<String> selectedValuesNames = [
+    "Boleta de pago",
+    "Archivo de retiro",
+    "Carnet",
+    "Carnet de conductor",
+    "Archivo de informacion de aduanas",
+    "Archivo de visado"
   ];
 
   @override
@@ -185,8 +195,6 @@ class _HistoryTramitesState extends State<HistoryTramites> {
   }
 
   void _newTramite(BuildContext context) {
-    String? amount;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -353,95 +361,94 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w400, fontSize: 16)),
                       SizedBox(height: 10),
-                      Row(
+                        Row(
                         children: [
                           SizedBox(width: 20),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomRadioSelectArchives(
-                                title: 'Boleta de pago.pdf',
-                                subTitle: 'Boleta de pago de la carga',
-                                value: 1,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de retiro.pdf',
-                                subTitle:
-                                    'Archivo que acredite el retiro de la carga',
-                                value: 2,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Carnet.pdf',
-                                subTitle: 'Cédula de identidad',
-                                value: 3,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomMultiSelectorArchives(
+                            title: 'Boleta de pago.pdf',
+                            subTitle: 'Boleta de pago de la carga',
+                            value: 1,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de retiro.pdf',
+                            subTitle: 'Archivo que acredite el retiro de la carga',
+                            value: 2,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Carnet.pdf',
+                            subTitle: 'Cédula de identidad',
+                            value: 3,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                          ],
                           ),
                           SizedBox(width: 20),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomRadioSelectArchives(
-                                title: 'Carnet de Conductor.pdf',
-                                subTitle: 'Cédula de identidad',
-                                value: 4,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de Información de Aduanas.pdf',
-                                subTitle: 'Archivo con Información de Aduanas',
-                                value: 5,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de Visado.pdf',
-                                subTitle: 'Archivo con visado de la carga',
-                                value: 6,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomMultiSelectorArchives(
+                            title: 'Carnet de Conductor.pdf',
+                            subTitle: 'Cédula de identidad',
+                            value: 4,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de Información de Aduanas.pdf',
+                            subTitle: 'Archivo con Información de Aduanas',
+                            value: 5,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de Visado.pdf',
+                            subTitle: 'Archivo con visado de la carga',
+                            value: 6,
+                            selectedValues: _selectedValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedValues = values;
+                              });
+                            },
+                            ),
+                          ],
                           ),
                         ],
-                      )
+                        )
                     ],
                   ),
                 ),

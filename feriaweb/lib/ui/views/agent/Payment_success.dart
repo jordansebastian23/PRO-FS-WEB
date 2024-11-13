@@ -1,10 +1,11 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/payments_datasource.dart';
+import 'package:feriaweb/services/edit_account.dart';
+import 'package:feriaweb/services/pagos_view.dart';
 import 'package:feriaweb/ui/buttons/custom_icontext_button.dart';
 import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class User {
   final String nombre;
@@ -12,7 +13,6 @@ class User {
 
   User({required this.nombre, required this.correo});
 }
-
 
 class PaymentsSuccess extends StatefulWidget {
   const PaymentsSuccess({super.key});
@@ -22,23 +22,19 @@ class PaymentsSuccess extends StatefulWidget {
 }
 
 class _PaymentsSuccessState extends State<PaymentsSuccess> {
+  User? selectedUser;
+  String? amount;
   DateTime? _selectedDate;
-    User? selectedUser;
-    final TextEditingController _searchController = TextEditingController();
-    final ValueNotifier<List<User>> _filteredUsersNotifier = ValueNotifier<List<User>>([]);
-
-
-  List<User> allUsers = [
-    User(nombre: 'Usuario 1', correo: 'usuario1@example.com'),
-    User(nombre: 'Usuario 2', correo: 'usuario2@example.com'),
-    User(nombre: 'Usuario 3', correo: 'usuario3@example.com'),
-    User(nombre: 'Usuario 4', correo: 'usuario4@example.com'),
-  ];
+  List<dynamic> allUsers = [];
+  List<dynamic> filteredUsers = [];
+  final TextEditingController _searchController = TextEditingController();
+  late Future<List<dynamic>> _pagosFuture;
 
   @override
   void initState() {
     super.initState();
-    _filteredUsersNotifier.value = allUsers;
+    _fetchUsers();
+    _pagosFuture = PagosService.fetchPagos();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -49,14 +45,26 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
     super.dispose();
   }
 
-  void _onSearchChanged() {
-    _filteredUsersNotifier.value = allUsers
-        .where((user) =>
-            user.nombre.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-            user.correo.toLowerCase().contains(_searchController.text.toLowerCase()))
-        .toList();
+  Future<void> _fetchUsers() async {
+    try {
+      allUsers = await EditAccountService.getUsers();
+      setState(() {
+        filteredUsers = allUsers;
+      });
+    } catch (e) {
+      print("Error fetching users: $e");
+    }
   }
 
+  void _onSearchChanged() {
+    setState(() {
+      filteredUsers = allUsers
+          .where((user) =>
+              user['display_name'].toLowerCase().contains(_searchController.text.toLowerCase()) ||
+              user['email'].toLowerCase().contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -75,7 +83,6 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
           child: child!,
         );
       },
-
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -84,111 +91,144 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
     }
   }
 
+  Future<void> _createPago() async {
+    if (selectedUser == null || amount == null || amount!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Debes seleccionar un usuario y un monto'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final response = await PagosService.createPago(
+        email: selectedUser!.correo,
+        monto: int.parse(amount!),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'])),
+      );
+      setState(() {
+        _pagosFuture = PagosService.fetchPagos();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create pago: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView(
-        physics: ClampingScrollPhysics(),
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 900,
-              child: Container(
-                decoration: buildBoxDecoration(),
-                child: PaginatedDataTable(
-                  actions: [
-                    //filtrar por fecha field
-                    Row(
-                      children: [
-                        CustomIcontextButton(
-                            title: 'Filtrar por fecha',
-                            color: Colors.blueAccent,
-                            icon: Icons.calendar_month_outlined,
-                            onPressed: () => _selectDate(context)),
-                        //Reestablecer filtro
-                        CustomIcontextButton(
-                            title: 'Reestablecer filtro',
-                            color: Colors.redAccent,
-                            icon: Icons.replay_outlined,
-                            onPressed: () {
-                              setState(() {
-                                _selectedDate = null;
-                              });
-                            }),
-                        CustomIcontextButton(
-                            title: 'Crear Nuevo pago',
-                            color: CustomColor.buttons,
-                            icon: Icons.add,
-                            onPressed: () {
-                              _newPay(context);
-                            }),
-                      ],
-                    )
-                  ],
-                  columnSpacing: 1,
-                  columns: [
-                    DataColumn(
-                        label: Text('ID Usuario',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('N° Carga',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Tipo de Carga',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Nombre Destinatario',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Monto a Pagar',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Estado',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Metodo de pago',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Detalles',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                  ],
-                  source: PaymentsDatasource(context),
-                  header: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.contain,
-                        child: Column(
+      child: FutureBuilder<List<dynamic>>(
+        future: _pagosFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final pagos = snapshot.data ?? [];
+            return ListView(
+              physics: ClampingScrollPhysics(),
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 900,
+                    child: Container(
+                      decoration: buildBoxDecoration(),
+                      child: PaginatedDataTable(
+                        actions: [
+                          //filtrar por fecha field
+                          Row(
+                            children: [
+                              CustomIcontextButton(
+                                  title: 'Filtrar por fecha',
+                                  color: Colors.blueAccent,
+                                  icon: Icons.calendar_month_outlined,
+                                  onPressed: () => _selectDate(context)),
+                              //Reestablecer filtro
+                              CustomIcontextButton(
+                                  title: 'Reestablecer filtro',
+                                  color: Colors.redAccent,
+                                  icon: Icons.replay_outlined,
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedDate = null;
+                                    });
+                                  }),
+                              CustomIcontextButton(
+                                  title: 'Crear Nuevo pago',
+                                  color: CustomColor.buttons,
+                                  icon: Icons.add,
+                                  onPressed: () {
+                                    _newPay(context);
+                                  }),
+                            ],
+                          )
+                        ],
+                        columnSpacing: 1,
+                        columns: [
+                          DataColumn(
+                              label: Text('ID Usuario',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Usuario',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Monto',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Fecha de Creación',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Estado',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Detalles',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                        ],
+                        source: PaymentsDatasource(context, pagos),
+                        header: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Historial de pagos',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24)),
-                            SizedBox(height: 10),
-                            //Fecha actual
-                            Text(
-                                'Fecha: ${_selectedDate != null ? _selectedDate!.toLocal().toString().split(' ')[0] : 'Seleccione una fecha'}',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 14)),
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Historial de pagos',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 24)),
+                                  SizedBox(height: 10),
+                                  //Fecha actual
+                                  Text(
+                                      'Fecha: ${_selectedDate != null ? _selectedDate!.toLocal().toString().split(' ')[0] : 'Seleccione una fecha'}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 14)),
+                                ],
+                              ),
+                            ),
                           ],
                         ),
+                        rowsPerPage: 5,
                       ),
-                    ],
+                    ),
                   ),
-                  rowsPerPage: 5,
                 ),
-              ),
-            ),
-          ),
-        ],
+              ],
+            );
+          }
+        },
       ),
     );
   }
 
   void _newPay(BuildContext context) {
-    String? amount;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -232,16 +272,18 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
                       ),
                       SizedBox(height: 10),
                       Text('Ingresa monto [\$CLP]',
-                      style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 13),),
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400, fontSize: 13)),
                       SizedBox(height: 8),
                       SizedBox(
                         width: 140,
                         height: 43,
                         child: TextFormField(
                           decoration: CustomInputs.createUser(
-                          colorBorder: Colors.black,
-                          hint: 'Ingresa el monto',
-                          label: 'Monto',),
+                            colorBorder: Colors.black,
+                            hint: 'Ingresa el monto',
+                            label: 'Monto',
+                          ),
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             amount = value;
@@ -276,6 +318,7 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
                           color: Colors.white,
                           fontSize: 16)),
                   onPressed: () {
+                    _createPago();
                     Navigator.of(context).pop();
                   },
                 ),
@@ -297,7 +340,8 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
               title: Text(
                 'Busqueda por Email',
                 textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(fontWeight: FontWeight.w400, fontSize: 13),
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400, fontSize: 13),
               ),
               content: SingleChildScrollView(
                 child: Container(
@@ -326,56 +370,67 @@ class _PaymentsSuccessState extends State<PaymentsSuccess> {
                       SizedBox(height: 10),
                       SizedBox(
                         height: 200,
-                        child: ValueListenableBuilder<List<User>>(
-                          valueListenable: _filteredUsersNotifier,
-                          builder: (context, filteredUsers, _) {
-                            return ListView(
-                              children: filteredUsers
-                                  .map((user) => ListTile(
-                                        title: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: selectedUser == user,
-                                              onChanged: (value) {
-                                                setStateDialog(() {
-                                                  selectedUser = user;
-                                                });
-                                                setState(() {
-                                                  selectedUser = user;
-                                                });
-                                                Navigator.of(context).pop(); // Cerrar diálogo
-                                              },
-                                            ),
-                                            SizedBox(width: 10),
-                                            CircleAvatar(),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(user.nombre,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight: FontWeight.w600,
-                                                        fontSize: 14)),
-                                                Text(user.correo,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight: FontWeight.w400,
-                                                        fontSize: 14)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          setStateDialog(() {
-                                            selectedUser = user;
-                                          });
-                                          setState(() {
-                                            selectedUser = user;
-                                          });
-                                          Navigator.of(context).pop(); // Cerrar diálogo
-                                        },
-                                      ))
-                                  .toList(),
+                        child: ListView.builder(
+                          itemCount: filteredUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = filteredUsers[index];
+                            final nombre = user['display_name'] ?? 'Usuario desconocido';
+                            final correo = user['email'] ?? 'Sin correo';
+
+                            return ListTile(
+                              title: Row(
+                                children: [
+                                  Checkbox(
+                                    value: selectedUser?.correo == correo,
+                                    onChanged: (value) {
+                                      setStateDialog(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      setState(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      Navigator.of(context).pop(); // Cerrar diálogo
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  CircleAvatar(),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(nombre,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14)),
+                                      Text(correo,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                setStateDialog(() {
+                                  selectedUser = User(
+                                    nombre: nombre,
+                                    correo: correo,
+                                  );
+                                });
+                                setState(() {
+                                  selectedUser = User(
+                                    nombre: nombre,
+                                    correo: correo,
+                                  );
+                                });
+                                Navigator.of(context).pop(); // Cerrar diálogo
+                              },
                             );
                           },
                         ),
