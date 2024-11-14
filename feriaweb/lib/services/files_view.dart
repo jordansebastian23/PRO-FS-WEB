@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FilesView {
-  static Future<Map<String, dynamic>> fetchFiles() async {
-    final url = Uri.parse('http://192.168.1.90/list_files/');
+  static const String baseUrl = 'http://192.168.1.90:8000';
+  static Future<List<dynamic>> fetchFiles() async {
+    final url = Uri.parse('$baseUrl/list_files/');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      return jsonDecode(response.body);
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      return responseBody['files'] as List<dynamic>;
     } else {
       throw Exception('Failed to load files: ${response.body}');
     }
