@@ -147,14 +147,17 @@ class TramiteService {
     }
   }
 
-  static Future<void> rejectFile(int archivoId) async {
+  static Future<void> rejectFile(int archivoId, String feedback) async {
     final url = Uri.parse('$baseUrl/reject_archivo/$archivoId/');
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token') ?? '';
     final response = await http.post(
       url,
-      headers: {'X-Auth-Token': token},
-      body: jsonEncode({'feedback': 'Some rejection feedback'}),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Auth-Token': token,
+      },
+      body: jsonEncode({'feedback': feedback}),
     );
 
     if (response.statusCode != 200) {
