@@ -36,6 +36,7 @@ class ArchivesUppload extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 60),
       child: FutureBuilder<List<dynamic>>(
         future: _archivesFuture,
         builder: (context, snapshot) {

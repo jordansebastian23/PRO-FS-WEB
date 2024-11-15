@@ -141,6 +141,7 @@ class _CargaViewState extends State<CargaView> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 60),
       child: FutureBuilder<List<dynamic>>(
         future: _cargasFuture,
         builder: (context, snapshot) {

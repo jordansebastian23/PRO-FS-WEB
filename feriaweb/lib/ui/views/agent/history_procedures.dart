@@ -167,6 +167,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: 60),
       child: FutureBuilder<List<dynamic>>(
         future: _tramitesFuture,
         builder: (context, snapshot) {

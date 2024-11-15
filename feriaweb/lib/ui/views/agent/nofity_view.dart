@@ -126,8 +126,8 @@ class _NofityViewState extends State<NofityView> {
                         fillColor: Colors.grey[200],
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-                        hintText: 'Search Users',
-                        labelText: 'Search Users',
+                        hintText: 'Buscar Usuarios',
+                        labelText: 'Buscar Usuarios',
                         labelStyle: TextStyle(color: Colors.black54),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -157,6 +157,7 @@ class _NofityViewState extends State<NofityView> {
 // Users List to Select Multiple Users
               Expanded(
                 child: Card(
+                  color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -214,8 +215,8 @@ class _NofityViewState extends State<NofityView> {
                 children: [
                   CustomCardNotify(
                     icon: Icons.error_outline_outlined,
-                    title: 'Urgent Notification',
-                    textRadio: 'Error / Warning',
+                    title: 'LogiQuick',
+                    textRadio: 'Error / Urgente',
                     colorBorder: Colors.red,
                     colorIcon: Colors.red,
                     value: 1,
@@ -230,8 +231,8 @@ class _NofityViewState extends State<NofityView> {
                   ),
                   CustomCardNotify(
                     icon: Icons.error_outline_outlined,
-                    title: 'Needs Attention',
-                    textRadio: 'Pending',
+                    title: 'LogiQuick',
+                    textRadio: 'Warning',
                     colorBorder: Colors.amber,
                     colorIcon: Colors.amber,
                     value: 2,
@@ -246,7 +247,7 @@ class _NofityViewState extends State<NofityView> {
                   ),
                   CustomCardNotify(
                     icon: Icons.info_outline,
-                    title: 'New Update',
+                    title: 'LogiQuick',
                     textRadio: 'Notice',
                     colorBorder: Colors.blue,
                     colorIcon: Colors.blue,

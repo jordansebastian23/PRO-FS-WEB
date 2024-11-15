@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomCardNotify extends StatefulWidget {
   CustomCardNotify(
@@ -60,7 +61,8 @@ class _CustomCardNotifyState extends State<CustomCardNotify> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.title,
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
+                        fontSize: 16,
                         fontWeight: FontWeight.w300,
                       )),
                   Text(widget.state),

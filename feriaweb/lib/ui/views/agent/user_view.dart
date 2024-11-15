@@ -82,485 +82,489 @@ class _CreateUserViewState extends State<CreateUserView> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: ClampingScrollPhysics(),
-      children: [
-        Align(
-          alignment: Alignment.center,
-          child: SizedBox(
-            width: 900,
-            child: Container(
-              padding: EdgeInsets.all(20),
-              decoration: buildBoxDecoration(),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.dashboard,
-                        size: 25,
-                        color: Colors.black,
-                      ),
-                      SizedBox(width: 30),
-                      Text(
-                        'Administrar usuarios',
-                        style: TextStyle(fontSize: 24, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    color: Colors.black,
-                    thickness: 2,
-                    endIndent: 30,
-                    indent: 30,
-                  ),
-                  SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CustomOutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            _showCreateUserForm = !_showCreateUserForm;
-                            if (_showCreateUserForm) {
-                              _showEditUserForm = false;
-                              _showDeleteUser = false;
-                              _showExtraContainerCreateUser = false;
-                            }
-                          });
-                        },
-                        text: 'Crear usuario',
-                        isFilled: true,
-                        color: CustomColor.buttons,
-                      ),
-                      SizedBox(width: 20),
-                      CustomOutlinedButton(
-                        onPressed: () {
-                          setState(() {
-                            _showEditUserForm = !_showEditUserForm;
-                            if (_showEditUserForm) {
-                              _showCreateUserForm = false;
-                              _showDeleteUser = false;
-                              _showExtraContainerCreateUser = true;
-                            }
-                          });
-                        },
-                        text: 'Editar usuario',
-                        isFilled: true,
-                        color: CustomColor.buttons,
-                      ),
-                      SizedBox(width: 20),
-                      // CustomOutlinedButton(
-                      //   onPressed: () {
-                      //     setState(() {
-                      //       _showDeleteUser = !_showDeleteUser;
-                      //       if (_showDeleteUser) {
-                      //         _showCreateUserForm = false;
-                      //         _showEditUserForm = false;
-                      //         _showExtraContainerCreateUser = false;
-                      //       }
-                      //     });
-                      //   },
-                      //   text: 'Deshabilitar usuario',
-                      //   isFilled: true,
-                      //   color: CustomColor.buttons,
-                      // ),
-                    ],
-                  ),
-                  if (_showCreateUserForm)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20),
-                      child: Form(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _nombreController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Nombre',
-                                      label: 'Nombre',
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _apellidoMaternoController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Apellido Materno',
-                                      label: 'Apellido Materno',
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _apellidoPaternoController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Apellido Paterno',
-                                      label: 'Apellido Paterno',
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _emailController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Correo Electronico',
-                                      label: 'Correo Electronico',
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  width: 250,
-                                  child: TextFormField(
-                                    controller: _phoneNumberController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Numero Telefono',
-                                      label: 'Numero Telefono',
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _passwordController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Contraseña',
-                                      label: 'Contraseña',
-                                    ),
-                                    obscureText: true,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                    controller: _confirmPasswordController,
-                                    decoration: CustomInputs.createUser(
-                                      colorBorder: Colors.black,
-                                      hint: 'Confirmar Contraseña',
-                                      label: 'Confirmar Contraseña',
-                                    ),
-                                    obscureText: true,
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                SizedBox(
-                                  width: 100,
-                                  child: DropdownButtonFormField<String>(
-                                    decoration: CustomInputs.dropDownItem(
-                                      colorBorder: Colors.black,
-                                      hint: 'Rol',
-                                      label: 'Rol',
-                                    ),
-                                    items: _roles.map((String role) {
-                                      return DropdownMenuItem<String>(
-                                        value: role,
-                                        child: Text(role),
-                                      );
-                                    }).toList(),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        _selectedRole = newValue;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                            Center(
-                              child: CustomOutlinedButton(
-                                onPressed: () async {
-                                  try {
-                                    final displayName =
-                                        '${_nombreController.text} ${_apellidoPaternoController.text} ${_apellidoMaternoController.text}';
-                                    final result = await CreateAccountService.createUser(
-                                      email: _emailController.text,
-                                      displayName: displayName,
-                                      phoneNumber: _phoneNumberController.text,
-                                      password: _passwordController.text,
-                                      role: _selectedRole ?? 'Tramites', // Default role if none selected
-                                    );
-                                    print('User created: $result');
-                                  } catch (e) {
-                                    print('Error creating user: $e');
-                                  }
-                                },
-                                text: 'Crear usuario',
-                                isFilled: true,
-                                color: CustomColor.buttons,
-                                // TODO: Implementar mensajes de exito o fallo, y luego limpiar los campos si es exitoso
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                  ),
-                  // if (_showEditUserForm)
-                  //   Padding(
-                  //       padding: EdgeInsets.only(top: 20),
-                  //       child: Form(
-                  //           child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         children: [
-                  //           SizedBox(
-                  //             width: 200,
-                  //             child: DropdownButtonFormField<String>(
-                  //               decoration: CustomInputs.dropDownItem(
-                  //                   colorBorder: Colors.black,
-                  //                   hint: 'ID Usuario',
-                  //                   label: 'ID Usuario'),
-                  //               items: ['01', '02', '03'].map((String ID) {
-                  //                 return DropdownMenuItem<String>(
-                  //                   value: ID,
-                  //                   child: Text(ID),
-                  //                 );
-                  //               }).toList(),
-                  //               onChanged: (String? newValue) {},
-                  //             ),
-                  //           ),
-                  //           SizedBox(height: 10),
-                  //           Row(
-                  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //             children: [
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                     decoration: CustomInputs.createUser(
-                  //                         colorBorder: Colors.black,
-                  //                         hint: 'Nombre',
-                  //                         label: 'Nombre')),
-                  //               ),
-                  //               SizedBox(width: 10),
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                     decoration: CustomInputs.createUser(
-                  //                         colorBorder: Colors.black,
-                  //                         hint: 'Apellido Materno',
-                  //                         label: 'Apellido Materno')),
-                  //               ),
-                  //               SizedBox(width: 10),
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                     decoration: CustomInputs.createUser(
-                  //                         colorBorder: Colors.black,
-                  //                         hint: 'Apellido Paterno',
-                  //                         label: 'Apellido Paterno')),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //           SizedBox(height: 10),
-                  //           Row(
-                  //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  //             children: [
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                     decoration: CustomInputs.createUser(
-                  //                         colorBorder: Colors.black,
-                  //                         hint: 'Correo Electronico',
-                  //                         label: 'Correo Electronico')),
-                  //               ),
-                  //               SizedBox(width: 10),
-                  //               SizedBox(
-                  //                 width: 100,
-                  //                 child: DropdownButtonFormField<String>(
-                  //                   decoration: CustomInputs.dropDownItem(
-                  //                       colorBorder: Colors.black,
-                  //                       hint: 'Rol',
-                  //                       label: 'Rol'),
-                  //                   items: ['Admin', 'User', 'Guest']
-                  //                       .map((String role) {
-                  //                     return DropdownMenuItem<String>(
-                  //                       value: role,
-                  //                       child: Text(role),
-                  //                     );
-                  //                   }).toList(),
-                  //                   onChanged: (String? newValue) {},
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //           SizedBox(height: 10),
-                  //           Row(
-                  //             children: [
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                     decoration: CustomInputs.createUser(
-                  //                         colorBorder: Colors.black,
-                  //                         hint: 'N° Telefono',
-                  //                         label: 'N° Telefono')),
-                  //               ),
-                  //               SizedBox(width: 10),
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                   decoration: CustomInputs.createUser(
-                  //                       colorBorder: Colors.black,
-                  //                       hint: 'Contraseña',
-                  //                       label: 'Contraseña'),
-                  //                   obscureText: true,
-                  //                 ),
-                  //               ),
-                  //               SizedBox(width: 10),
-                  //               Expanded(
-                  //                 child: TextFormField(
-                  //                   decoration: CustomInputs.createUser(
-                  //                       colorBorder: Colors.black,
-                  //                       hint: 'confirmar Contraseña',
-                  //                       label: 'Confirmar Contraseña'),
-                  //                   obscureText: true,
-                  //                 ),
-                  //               ),
-                  //             ],
-                  //           ),
-                  //           SizedBox(height: 20),
-                  //           Center(
-                  //             child: CustomOutlinedButton(
-                  //                 onPressed: () {
-                  //                   setState(() {
-                  //                     _showExtraContainerCreateUser =
-                  //                         !_showExtraContainerCreateUser;
-                  //                   });
-                  //                 },
-                  //                 isFilled: true,
-                  //                 color: CustomColor.buttons,
-                  //                 text: 'Guardar Cambio'),
-                  //           )
-                  //         ],
-                  //       ))),
-        //           if (_showDeleteUser)
-        //             Padding(
-        //                 padding: EdgeInsets.only(top: 20),
-        //                 child: Form(
-        //                     child: Column(
-        //                   crossAxisAlignment: CrossAxisAlignment.start,
-        //                   children: [
-        //                     SizedBox(
-        //                       width: 200,
-        //                       child: DropdownButtonFormField<String>(
-        //                         decoration: CustomInputs.dropDownItem(
-        //                             colorBorder: Colors.black,
-        //                             hint: 'ID Usuario',
-        //                             label: 'ID Usuario'),
-        //                         items: ['01', '02', '03'].map((String ID) {
-        //                           return DropdownMenuItem<String>(
-        //                             value: ID,
-        //                             child: Text(ID),
-        //                           );
-        //                         }).toList(),
-        //                         onChanged: (String? newValue) {},
-        //                       ),
-        //                     ),
-        //                     SizedBox(height: 20),
-        //                     Center(
-        //                       child: CustomOutlinedButton(
-        //                           onPressed: () {
-        //                             setState(() {
-        //                               _showExtraContainerCreateUser =
-        //                                   !_showExtraContainerCreateUser;
-        //                             });
-        //                           },
-        //                           isFilled: true,
-        //                           color: CustomColor.buttons,
-        //                           text: 'Deshabilitar Usuario'),
-        //                     )
-        //                   ],
-        //                 )))
-                ],
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
-        //Fuera del contenedor principal
-        if (_showExtraContainerCreateUser)
+    return Padding(
+      padding: const EdgeInsets.only(top: 60),
+      child: ListView(
+        physics: ClampingScrollPhysics(),
+        children: [
           Align(
             alignment: Alignment.center,
             child: SizedBox(
-              width: 900,
+              width: 940,
               child: Container(
+                padding: EdgeInsets.all(20),
                 decoration: buildBoxDecoration(),
-                padding:
-                    EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
-                child: FutureBuilder<List<dynamic>>(
-                  future: EditAccountService.getUsers(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else {
-                      final users = snapshot.data ?? [];
-                      return PaginatedDataTable(
-                        arrowHeadColor: CustomColor.buttons,
-                        headingRowColor: WidgetStateProperty.all(Colors.transparent),
-                        columnSpacing: 2,
-                        columns: [
-                          DataColumn(
-                              label: Text('ID',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Nombre',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Rol',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Correo',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Numero Telefono',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                                label: Text('Estado',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                          DataColumn(
-                              label: Text('Editar Informacion',
-                                  style: TextStyle(fontWeight: FontWeight.bold))),
-                        ],
-                        source: UsersCreated(context, users),
-                        header: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(Icons.group_outlined, size: 25, color: Colors.black),
-                            SizedBox(width: 10),
-                            Text('Lista de usuarios',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 24)),
-                          ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.dashboard,
+                          size: 25,
+                          color: Colors.black,
                         ),
-                        rowsPerPage: 10,
-                      );
-                    }
-                  },
+                        SizedBox(width: 30),
+                        Text(
+                          'Administrar usuarios',
+                          style: TextStyle(fontSize: 24, color: Colors.black),
+                        ),
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.black,
+                      thickness: 2,
+                      endIndent: 30,
+                      indent: 30,
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CustomOutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              _showCreateUserForm = !_showCreateUserForm;
+                              if (_showCreateUserForm) {
+                                _showEditUserForm = false;
+                                _showDeleteUser = false;
+                                _showExtraContainerCreateUser = false;
+                              }
+                            });
+                          },
+                          text: 'Crear usuario',
+                          isFilled: true,
+                          color: CustomColor.buttons,
+                        ),
+                        SizedBox(width: 20),
+                        CustomOutlinedButton(
+                          onPressed: () {
+                            setState(() {
+                              _showEditUserForm = !_showEditUserForm;
+                              if (_showEditUserForm) {
+                                _showCreateUserForm = false;
+                                _showDeleteUser = false;
+                                _showExtraContainerCreateUser = true;
+                              }
+                            });
+                          },
+                          text: 'Editar usuario',
+                          isFilled: true,
+                          color: CustomColor.buttons,
+                        ),
+                        SizedBox(width: 20),
+                        // CustomOutlinedButton(
+                        //   onPressed: () {
+                        //     setState(() {
+                        //       _showDeleteUser = !_showDeleteUser;
+                        //       if (_showDeleteUser) {
+                        //         _showCreateUserForm = false;
+                        //         _showEditUserForm = false;
+                        //         _showExtraContainerCreateUser = false;
+                        //       }
+                        //     });
+                        //   },
+                        //   text: 'Deshabilitar usuario',
+                        //   isFilled: true,
+                        //   color: CustomColor.buttons,
+                        // ),
+                      ],
+                    ),
+                    if (_showCreateUserForm)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Form(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _nombreController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Nombre',
+                                        label: 'Nombre',
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _apellidoMaternoController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Apellido Materno',
+                                        label: 'Apellido Materno',
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _apellidoPaternoController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Apellido Paterno',
+                                        label: 'Apellido Paterno',
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _emailController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Correo Electronico',
+                                        label: 'Correo Electronico',
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                    width: 250,
+                                    child: TextFormField(
+                                      controller: _phoneNumberController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Numero Telefono',
+                                        label: 'Numero Telefono',
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _passwordController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Contraseña',
+                                        label: 'Contraseña',
+                                      ),
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  Expanded(
+                                    child: TextFormField(
+                                      controller: _confirmPasswordController,
+                                      decoration: CustomInputs.createUser(
+                                        colorBorder: Colors.black,
+                                        hint: 'Confirmar Contraseña',
+                                        label: 'Confirmar Contraseña',
+                                      ),
+                                      obscureText: true,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10),
+                                  SizedBox(
+                                    width: 124,
+                                    child: DropdownButtonFormField<String>(
+                                      decoration: CustomInputs.dropDownItem(
+                                        colorBorder: Colors.black,
+                                        hint: 'Rol',
+                                        label: 'Rol',
+                                      ),
+                                      items: _roles.map((String role) {
+                                        return DropdownMenuItem<String>(
+                                          value: role,
+                                          child: Text(role),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          _selectedRole = newValue;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 20),
+                              Center(
+                                child: CustomOutlinedButton(
+                                  onPressed: () async {
+                                    try {
+                                      final displayName =
+                                          '${_nombreController.text} ${_apellidoPaternoController.text} ${_apellidoMaternoController.text}';
+                                      final result = await CreateAccountService.createUser(
+                                        email: _emailController.text,
+                                        displayName: displayName,
+                                        phoneNumber: _phoneNumberController.text,
+                                        password: _passwordController.text,
+                                        role: _selectedRole ?? 'Tramites', // Default role if none selected
+                                      );
+                                      print('User created: $result');
+                                    } catch (e) {
+                                      print('Error creating user: $e');
+                                    }
+                                  },
+                                  text: 'Crear usuario',
+                                  isFilled: true,
+                                  color: CustomColor.buttons,
+                                  // TODO: Implementar mensajes de exito o fallo, y luego limpiar los campos si es exitoso
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                    ),
+                    // if (_showEditUserForm)
+                    //   Padding(
+                    //       padding: EdgeInsets.only(top: 20),
+                    //       child: Form(
+                    //           child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           SizedBox(
+                    //             width: 200,
+                    //             child: DropdownButtonFormField<String>(
+                    //               decoration: CustomInputs.dropDownItem(
+                    //                   colorBorder: Colors.black,
+                    //                   hint: 'ID Usuario',
+                    //                   label: 'ID Usuario'),
+                    //               items: ['01', '02', '03'].map((String ID) {
+                    //                 return DropdownMenuItem<String>(
+                    //                   value: ID,
+                    //                   child: Text(ID),
+                    //                 );
+                    //               }).toList(),
+                    //               onChanged: (String? newValue) {},
+                    //             ),
+                    //           ),
+                    //           SizedBox(height: 10),
+                    //           Row(
+                    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //             children: [
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                     decoration: CustomInputs.createUser(
+                    //                         colorBorder: Colors.black,
+                    //                         hint: 'Nombre',
+                    //                         label: 'Nombre')),
+                    //               ),
+                    //               SizedBox(width: 10),
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                     decoration: CustomInputs.createUser(
+                    //                         colorBorder: Colors.black,
+                    //                         hint: 'Apellido Materno',
+                    //                         label: 'Apellido Materno')),
+                    //               ),
+                    //               SizedBox(width: 10),
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                     decoration: CustomInputs.createUser(
+                    //                         colorBorder: Colors.black,
+                    //                         hint: 'Apellido Paterno',
+                    //                         label: 'Apellido Paterno')),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           SizedBox(height: 10),
+                    //           Row(
+                    //             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //             children: [
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                     decoration: CustomInputs.createUser(
+                    //                         colorBorder: Colors.black,
+                    //                         hint: 'Correo Electronico',
+                    //                         label: 'Correo Electronico')),
+                    //               ),
+                    //               SizedBox(width: 10),
+                    //               SizedBox(
+                    //                 width: 100,
+                    //                 child: DropdownButtonFormField<String>(
+                    //                   decoration: CustomInputs.dropDownItem(
+                    //                       colorBorder: Colors.black,
+                    //                       hint: 'Rol',
+                    //                       label: 'Rol'),
+                    //                   items: ['Admin', 'User', 'Guest']
+                    //                       .map((String role) {
+                    //                     return DropdownMenuItem<String>(
+                    //                       value: role,
+                    //                       child: Text(role),
+                    //                     );
+                    //                   }).toList(),
+                    //                   onChanged: (String? newValue) {},
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           SizedBox(height: 10),
+                    //           Row(
+                    //             children: [
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                     decoration: CustomInputs.createUser(
+                    //                         colorBorder: Colors.black,
+                    //                         hint: 'N° Telefono',
+                    //                         label: 'N° Telefono')),
+                    //               ),
+                    //               SizedBox(width: 10),
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                   decoration: CustomInputs.createUser(
+                    //                       colorBorder: Colors.black,
+                    //                       hint: 'Contraseña',
+                    //                       label: 'Contraseña'),
+                    //                   obscureText: true,
+                    //                 ),
+                    //               ),
+                    //               SizedBox(width: 10),
+                    //               Expanded(
+                    //                 child: TextFormField(
+                    //                   decoration: CustomInputs.createUser(
+                    //                       colorBorder: Colors.black,
+                    //                       hint: 'confirmar Contraseña',
+                    //                       label: 'Confirmar Contraseña'),
+                    //                   obscureText: true,
+                    //                 ),
+                    //               ),
+                    //             ],
+                    //           ),
+                    //           SizedBox(height: 20),
+                    //           Center(
+                    //             child: CustomOutlinedButton(
+                    //                 onPressed: () {
+                    //                   setState(() {
+                    //                     _showExtraContainerCreateUser =
+                    //                         !_showExtraContainerCreateUser;
+                    //                   });
+                    //                 },
+                    //                 isFilled: true,
+                    //                 color: CustomColor.buttons,
+                    //                 text: 'Guardar Cambio'),
+                    //           )
+                    //         ],
+                    //       ))),
+          //           if (_showDeleteUser)
+          //             Padding(
+          //                 padding: EdgeInsets.only(top: 20),
+          //                 child: Form(
+          //                     child: Column(
+          //                   crossAxisAlignment: CrossAxisAlignment.start,
+          //                   children: [
+          //                     SizedBox(
+          //                       width: 200,
+          //                       child: DropdownButtonFormField<String>(
+          //                         decoration: CustomInputs.dropDownItem(
+          //                             colorBorder: Colors.black,
+          //                             hint: 'ID Usuario',
+          //                             label: 'ID Usuario'),
+          //                         items: ['01', '02', '03'].map((String ID) {
+          //                           return DropdownMenuItem<String>(
+          //                             value: ID,
+          //                             child: Text(ID),
+          //                           );
+          //                         }).toList(),
+          //                         onChanged: (String? newValue) {},
+          //                       ),
+          //                     ),
+          //                     SizedBox(height: 20),
+          //                     Center(
+          //                       child: CustomOutlinedButton(
+          //                           onPressed: () {
+          //                             setState(() {
+          //                               _showExtraContainerCreateUser =
+          //                                   !_showExtraContainerCreateUser;
+          //                             });
+          //                           },
+          //                           isFilled: true,
+          //                           color: CustomColor.buttons,
+          //                           text: 'Deshabilitar Usuario'),
+          //                     )
+          //                   ],
+          //                 )))
+                  ],
                 ),
               ),
             ),
           ),
-      ],
-
+          SizedBox(height: 10),
+          //Fuera del contenedor principal
+          if (_showExtraContainerCreateUser)
+            Align(
+              alignment: Alignment.center,
+              child: SizedBox(
+                width: 900,
+                height: 681,
+                child: Container(
+                  decoration: buildBoxDecoration(),
+                  padding:
+                      EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
+                  child: FutureBuilder<List<dynamic>>(
+                    future: EditAccountService.getUsers(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        final users = snapshot.data ?? [];
+                        return PaginatedDataTable(
+                          arrowHeadColor: CustomColor.buttons,
+                          headingRowColor: WidgetStateProperty.all(Colors.transparent),
+                          columnSpacing: 2,
+                          columns: [
+                            DataColumn(
+                                label: Text('ID',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Nombre',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Rol',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Correo',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Numero Telefono',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                  label: Text('Estado',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                            DataColumn(
+                                label: Text('Editar Informacion',
+                                    style: TextStyle(fontWeight: FontWeight.bold))),
+                          ],
+                          source: UsersCreated(context, users),
+                          header: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(Icons.group_outlined, size: 25, color: Colors.black),
+                              SizedBox(width: 10),
+                              Text('Lista de usuarios',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 24)),
+                            ],
+                          ),
+                          rowsPerPage: 10,
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ),
+            ),
+        ],
+      
+      ),
     );
 
   }
