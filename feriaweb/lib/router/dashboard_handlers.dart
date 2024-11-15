@@ -1,7 +1,5 @@
-import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
-import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
 import 'package:feriaweb/ui/views/agent/carga_view.dart';
 import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
 import 'package:feriaweb/ui/views/agent/history_procedures.dart';
@@ -16,15 +14,17 @@ import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/ui/views/agent/user_view.dart';
 
 class DashboardHandlers {
+
   static Handler dashboard = Handler(
-    handlerFunc: (context, params) {
+    handlerFunc: ( context, params ) {
+
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.dashboardRoute);
-      
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? DashboardView()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return DashboardView();
+      else 
+        return LoginView();
+    }
   );
   
   static Handler gUsuarios = Handler(
@@ -40,69 +40,80 @@ class DashboardHandlers {
   );
 
   static Handler pRealizados = Handler(
-    handlerFunc: (context, params) {
+    handlerFunc: ( context, params ) {
+
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
 
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? PaymentsSuccess()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return PaymentsSuccess();
+      else 
+        return LoginView();
+    }
   );
 
+  //TODO: ASIGNAR LA VISTA
+
   static Handler aSubidos = Handler(
-    handlerFunc: (context, params) {
+    handlerFunc: ( context, params ) {
+
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.aSubidosRoute);
 
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? ArchivesUppload()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return ArchivesUppload();
+      else 
+        return LoginView();
+    }
   );
 
   static Handler hTramites = Handler(
-    handlerFunc: (context, params) {
+    handlerFunc: ( context, params ) {
+
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.hTramitesRoute);
-
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? HistoryTramites()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return HistoryTramites();
+      else 
+        return LoginView();
+    }
   );
 
-  static Handler notify = Handler(
-    handlerFunc: (context, params) {
-      final authProvider = Provider.of<AuthProvider>(context!);
-      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.notifyRoute);
+    static Handler notify = Handler(
+    handlerFunc: ( context, params ) {
 
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? PaymentsSuccess()
-          : LoginView();
-    },
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return PaymentsSuccess();
+      else 
+        return LoginView();
+    }
   );
 
   static Handler notifyadm = Handler(
-    handlerFunc: (context, params) {
+    handlerFunc: ( context, params ) {
+
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.notifyRouteAdm);
-
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? NofityView()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return NofityView();
+      else 
+        return LoginView();
+    }
   );
 
-  static Handler config = Handler(
-    handlerFunc: (context, params) {
-      final authProvider = Provider.of<AuthProvider>(context!);
-      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.configRoute);
 
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? PaymentsSuccess()
-          : LoginView();
-    },
+  static Handler config = Handler(
+    handlerFunc: ( context, params ) {
+
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.pRealizadosRoute);
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return PaymentsSuccess();
+      else 
+        return LoginView();
+    }
   );
 
   static Handler gCargas = Handler(
@@ -110,10 +121,12 @@ class DashboardHandlers {
 
       final authProvider = Provider.of<AuthProvider>(context!);
       Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.gCargasRoute);
-      return authProvider.authStatus == AuthStatus.authenticated
-          ? CargaView()
-          : LoginView();
-    },
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return CargaView();
+      else 
+        return LoginView();
+    }
   );
 
 }
+

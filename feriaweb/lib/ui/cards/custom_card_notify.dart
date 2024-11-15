@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomCardNotify extends StatefulWidget {
   CustomCardNotify(
@@ -8,7 +7,7 @@ class CustomCardNotify extends StatefulWidget {
       required this.icon,
       required this.state,
       required this.textRadio,
-      required this.colorBorder, required this.colorIcon, required this.value, required this.groupValue, required this.onChanged, required this.notificationController});
+      required this.colorBorder, required this.colorIcon, required this.value, required this.groupValue, required this.onChanged});
 
   final String title;
   final IconData icon;
@@ -19,13 +18,13 @@ class CustomCardNotify extends StatefulWidget {
     final int value;
   final int groupValue;
   final ValueChanged<int?> onChanged;
-  final TextEditingController notificationController;
+
   @override
   State<CustomCardNotify> createState() => _CustomCardNotifyState();
 }
 
 class _CustomCardNotifyState extends State<CustomCardNotify> {
-  // final TextEditingController _notificationController = TextEditingController();
+  final TextEditingController _notificationController = TextEditingController();
 
 
   @override
@@ -61,8 +60,7 @@ class _CustomCardNotifyState extends State<CustomCardNotify> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(widget.title,
-                      style: GoogleFonts.inter(
-                        fontSize: 16,
+                      style: TextStyle(
                         fontWeight: FontWeight.w300,
                       )),
                   Text(widget.state),
@@ -71,7 +69,7 @@ class _CustomCardNotifyState extends State<CustomCardNotify> {
                     height: 100,
                     width: 230,
                     child: TextFormField(
-                      controller: widget.notificationController,
+                      controller: _notificationController,
                       maxLines: 5, // Permite múltiples líneas
                       decoration: InputDecoration(
                         hintText: '(Escriba aquí su mensaje)',

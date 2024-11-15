@@ -1,52 +1,14 @@
 import 'package:feriaweb/datatables/archive_uppload_datasource.dart';
-import 'package:feriaweb/services/files_view.dart';
 import 'package:flutter/material.dart';
 
-class ArchivesUppload extends StatefulWidget {
 
+class ArchivesUppload extends StatelessWidget {
   const ArchivesUppload({super.key});
-
-  @override
-  State<ArchivesUppload> createState() => _ArchivesUpploadState();
-
-}
-
-  class _ArchivesUpploadState extends State<ArchivesUppload> {
-  List<dynamic> allArchives = [];
-  List<dynamic> filteredArchives = [];
-  late Future<List<dynamic>> _archivesFuture;
-
-  void initState() {
-    super.initState();
-    _fetchFiles();
-    _archivesFuture = FilesView.fetchFiles();
-  }
-
-  _fetchFiles() async {
-    try {
-    allArchives = await FilesView.fetchFiles();
-    setState(() {
-      filteredArchives = allArchives;
-    });
-    } catch (e) {
-      print('Error loading archives: $e');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 60),
-      child: FutureBuilder<List<dynamic>>(
-        future: _archivesFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final archives = snapshot.data ?? [];
-      return ListView(
+      child: ListView(
         physics: ClampingScrollPhysics(),
         children: [
           Align(
@@ -59,52 +21,58 @@ class ArchivesUppload extends StatefulWidget {
                   columnSpacing: 1,
                   columns: [
                     DataColumn(
-                        label: Text('ID Archivo',
+                        label: Text('ID Usuario',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Usuario',
+                        label: Text('N° tramite',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Nombre archivo',
+                        label: Text('N° Carga',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Fecha subida',
+                        label: Text('tipo de carga',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Archivos faltantes',
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    DataColumn(
+                        label: Text('Tipo de archivos',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
                         label: Text('Estado',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                            )),
+                            style: TextStyle(fontWeight: FontWeight.bold))),
+                    
                     DataColumn(
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: ArchiveUpploadDatasource(context, archives),
+                  source: ArchiveUpploadDatasource(context),
                   header: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       FittedBox(
                         fit: BoxFit.contain,
                         child: Text('Archivos Subidos',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24)),
+                            style:
+                                TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
                       ),
                     ],
                   ),
-                  rowsPerPage: 10,
+                  rowsPerPage: 5,
                 ),
               ),
             ),
           )
         ],
-      );
-      }
-    },
-    ),
+      ),
     );
   }
-}
   BoxDecoration buildBoxDecoration() => BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black, width: 1),
-        borderRadius: BorderRadius.circular(20),
-      );
+    color: Colors.white,
+    border: Border.all(color: Colors.black,
+        width: 1),
+    borderRadius: BorderRadius.circular(20),
+          
+          );
+
+}

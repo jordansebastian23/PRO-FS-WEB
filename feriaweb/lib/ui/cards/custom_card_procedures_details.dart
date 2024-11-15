@@ -8,19 +8,14 @@ class CustomCardProceduresDetails extends StatelessWidget {
   final String title;
   final String subTitle;
   final bool showButtons;
-  final VoidCallback? onApprove;
-  final VoidCallback? onReject;
-  final VoidCallback? onReview;
 
-  const CustomCardProceduresDetails({
-    required this.icon,
-    required this.bgColor,
-    required this.title,
-    required this.subTitle,
-    this.showButtons = false,
-    this.onApprove,
-    this.onReject,
-    this.onReview,
+
+  const CustomCardProceduresDetails({super.key,
+  required this.icon,
+  required this.bgColor,
+  required this.title,
+  required this.subTitle,
+  this.showButtons = false,
   });
 
   @override
@@ -34,30 +29,62 @@ class CustomCardProceduresDetails extends StatelessWidget {
         ),
         SizedBox(width: 10),
         Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
-            Text(subTitle, style: TextStyle(color: Colors.grey)),
+            Text(title, style: GoogleFonts.inter(color: Colors.black, fontSize: 14 , fontWeight: FontWeight.w600)),
+            Text(subTitle, style: GoogleFonts.inter(color: Colors.grey, fontSize: 14 , fontWeight: FontWeight.w400)),
           ],
         ),
         Spacer(),
         if (showButtons) ...[
-          TextButton(
-            onPressed: onReview,
-            style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.amber)),
-            child: Text('Revisar', style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-          TextButton(
-            onPressed: onReject,
-            style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.redAccent)),
-            child: Text('Denegar', style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-          TextButton(
-            onPressed: onApprove,
-            style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.greenAccent)),
-            child: Text('Aprobar', style: TextStyle(fontSize: 12, color: Colors.white)),
-          ),
-        ],
+        SizedBox(
+          width: 73,
+          height: 16,
+          child: TextButton(
+              style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all<Color>(Colors.amber)),
+              onPressed: () {},
+              child: Text('Revisar', style: TextStyle(fontSize: 12, color: Colors.white))),
+        ),
+        SizedBox(width: 10),
+        Column(
+          children: [
+            SizedBox(
+              width: 73,
+              height: 16,
+              child: TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all<Color>(Colors.redAccent)),
+                  child: Text('Denegar', style: TextStyle(fontSize: 12, color: Colors.white))),
+            ),
+            SizedBox(height: 5),
+            SizedBox(
+              width: 73,
+              height: 16,
+              child: TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all<Color>(CustomColor.buttons)),
+                  child: Text('Notificar', style: TextStyle(fontSize: 12, color: Colors.white))),
+            ),
+          ],
+        ),
+        SizedBox(width: 10),
+        SizedBox(
+          width: 73,
+          height: 16,
+          child: TextButton(
+              onPressed: () {},
+              style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStateProperty.all<Color>(Colors.greenAccent)),
+              child: Text('Aprobar', style: TextStyle(fontSize: 12, color: Colors.white))),
+        )
+      ],
       ],
     );
   }
