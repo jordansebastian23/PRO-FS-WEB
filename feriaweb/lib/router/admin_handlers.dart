@@ -1,5 +1,5 @@
 import 'package:feriaweb/providers/auth_provider.dart';
-import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
+import 'package:feriaweb/ui/views/agent/user_view.dart';
 import 'package:fluro/fluro.dart';
 
 import 'package:feriaweb/ui/views/login_view.dart';
@@ -16,7 +16,7 @@ class AdminHandlers {
       if ( authProvider.authStatus == AuthStatus.notAuthenticated )
         return LoginView();
       else 
-        return DashboardView();
+        return CreateUserView();
 
     }
   );
@@ -29,7 +29,7 @@ class AdminHandlers {
       if ( authProvider.authStatus == AuthStatus.notAuthenticated )
         return RegisterView();
       else 
-        return DashboardView();
+        return CreateUserView();
     }
   );
 

@@ -1,6 +1,7 @@
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/ui/views/agent/carga_view.dart';
+import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
 import 'package:feriaweb/ui/views/agent/history_procedures.dart';
 import 'package:feriaweb/ui/views/agent/nofity_view.dart';
 import 'package:feriaweb/ui/views/agent/Payment_success.dart';
@@ -10,7 +11,7 @@ import 'package:fluro/fluro.dart';
 import 'package:provider/provider.dart';
 
 import 'package:feriaweb/providers/auth_provider.dart';
-import 'package:feriaweb/ui/views/agent/dashboard_view.dart';
+import 'package:feriaweb/ui/views/agent/user_view.dart';
 
 class DashboardHandlers {
 
@@ -26,7 +27,18 @@ class DashboardHandlers {
     }
   );
   
-  
+  static Handler gUsuarios = Handler(
+    handlerFunc: ( context, params ) {
+
+      final authProvider = Provider.of<AuthProvider>(context!);
+      Provider.of<SidemenuProvider>(context, listen: false).setCurrentPageUrl(Flurorouter.gUsuariosRoute);
+      if ( authProvider.authStatus == AuthStatus.authenticated )
+        return CreateUserView();
+      else 
+        return LoginView();
+    }
+  );
+
   static Handler pRealizados = Handler(
     handlerFunc: ( context, params ) {
 
