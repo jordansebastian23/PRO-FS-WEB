@@ -88,7 +88,7 @@ class ArchivesUppload extends StatefulWidget {
                       ),
                     ],
                   ),
-                  rowsPerPage: 5,
+                  rowsPerPage: 10,
                 ),
               ),
             ),
