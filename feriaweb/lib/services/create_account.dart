@@ -10,7 +10,7 @@ class CreateAccountService{
     required String role,
   }) async{
     // Poner la ip del servidor final aqui
-    final url = Uri.parse('http://192.168.1.90:8000/create_user/');
+    final url = Uri.parse('http://18.191.50.120/create_user/');
     final response = await http.post(
       url,
       body: {

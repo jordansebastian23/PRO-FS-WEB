@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class TramiteService {
-  static const String baseUrl = 'http://192.168.1.90:8000';
+  static const String baseUrl = 'http://18.191.50.120';
 
   /// Method to create a new Tramite
   static Future<Map<String, dynamic>> createTramite({

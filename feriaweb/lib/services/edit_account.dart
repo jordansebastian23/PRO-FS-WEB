@@ -8,7 +8,7 @@ class EditAccountService {
     required String phoneNumber,
     required String role,
   }) async {
-    final url = Uri.parse('http://192.168.1.90:8000/edit_user/');
+    final url = Uri.parse('http://18.191.50.120/edit_user/');
     final response = await http.put(
       url,
       headers: {
@@ -32,7 +32,7 @@ class EditAccountService {
   static Future<Map<String, dynamic>> disableUser({
     required String email,
   }) async {
-    final url = Uri.parse('http://192.168.1.90:8000/disable_user/');
+    final url = Uri.parse('http://18.191.50.120/disable_user/');
     final response = await http.put(
       url,
       headers: {
@@ -52,7 +52,7 @@ class EditAccountService {
   static Future<Map<String, dynamic>> enableUser({
     required String email,
   }) async {
-    final url = Uri.parse('http://192.168.1.90:8000/enable_user/');
+    final url = Uri.parse('http://18.191.50.120/enable_user/');
     final response = await http.put(
       url,
       headers: {
@@ -70,7 +70,7 @@ class EditAccountService {
   }
 
   static Future<List<dynamic>> getUsers() async {
-    final url = Uri.parse('http://192.168.1.90:8000/list_users/');
+    final url = Uri.parse('http://18.191.50.120/list_users/');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

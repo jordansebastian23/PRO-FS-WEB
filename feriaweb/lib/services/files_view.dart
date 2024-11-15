@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FilesView {
-  static const String baseUrl = 'http://192.168.1.90:8000';
+  static const String baseUrl = 'http://18.191.50.120';
   static Future<List<dynamic>> fetchFiles() async {
     final url = Uri.parse('$baseUrl/list_files/');
     final response = await http.get(url);
@@ -16,7 +16,7 @@ class FilesView {
   }
 
   static Future<Map<String, dynamic>> approveFile(int archivoId) async {
-    final url = Uri.parse('http://192.168.1.90/approve_archivo/$archivoId/');
+    final url = Uri.parse('http://18.191.50.120/approve_archivo/$archivoId/');
     final response = await http.post(url);
 
     if (response.statusCode == 200) {
@@ -27,7 +27,7 @@ class FilesView {
   }
 
   static Future<Map<String, dynamic>> rejectFile(int archivoId, String feedback) async {
-    final url = Uri.parse('http://192.168.1.90/reject_archivo/$archivoId/');
+    final url = Uri.parse('http://18.191.50.120/reject_archivo/$archivoId/');
     final response = await http.post(
       url,
       headers: {

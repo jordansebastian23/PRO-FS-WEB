@@ -10,7 +10,7 @@ class LoginService {
     required Function onSuccess,
     required Function(String) onError,
   }) async {
-    final url = Uri.parse('http://192.168.1.90:8000/login_user/');
+    final url = Uri.parse('http://18.191.50.120/login_user/');
 
     final response = await http.post(
       url,
@@ -53,7 +53,7 @@ class LoginService {
     
 
   static Future<Map<String, dynamic>> getUserData(String token) async {
-    final url = Uri.parse('http://192.168.1.90:8000/get_user_details/');
+    final url = Uri.parse('http://18.191.50.120/get_user_details/');
     final response = await http.get(
       url,
       headers: {
@@ -74,7 +74,7 @@ class LoginService {
 
     // Call the API to logout and invalidate the token
     // Change the IP address to the server's IP
-    final url = Uri.parse('http://192.168.1.90:8000/logout_user/');
+    final url = Uri.parse('http://18.191.50.120/logout_user/');
     final response = await http.post(
       url,
       headers: {

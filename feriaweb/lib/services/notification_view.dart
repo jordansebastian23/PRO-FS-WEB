@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class NotificationService {
-  static const String baseUrl = 'http://192.168.1.90:8000';
+  static const String baseUrl = 'http://18.191.50.120';
 
   /// Method to create a new notification
   static Future<Map<String, dynamic>> createNotification({
