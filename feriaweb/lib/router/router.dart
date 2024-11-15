@@ -16,6 +16,7 @@ class Flurorouter {
   // Dashboard Menu
   //TODO: CREAR RUTAS PARA LOS DIFERENTES PANELES DE CONTROL
   static String dashboardRoute = '/dashboard';
+  static String gUsuariosRoute = '/dashboard/gestion-usuarios';
   static String pRealizadosRoute = '/dashboard/pagos-pendientes';
   static String aSubidosRoute = '/dashboard/archivos-subidos';
   static String hTramitesRoute = '/dashboard/historial-tramites';
@@ -46,7 +47,7 @@ class Flurorouter {
     router.define(gCargasRoute, handler: DashboardHandlers.gCargas, transitionType: TransitionType.none );
     router.define(notifyRoute, handler: DashboardHandlers.notify, transitionType: TransitionType.none );
     router.define(configRoute, handler: DashboardHandlers.config, transitionType: TransitionType.none );
-
+    router.define(gUsuariosRoute, handler: DashboardHandlers.gUsuarios, transitionType: TransitionType.none );
 
     //adm dashboard
     router.define(notifyRouteAdm, handler: DashboardHandlers.notifyadm, transitionType: TransitionType.none );

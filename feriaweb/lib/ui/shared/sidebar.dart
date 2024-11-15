@@ -29,11 +29,19 @@ class SideBar extends StatelessWidget {
           SizedBox(height: 50),
           TextSeparator(text: 'Menu'),
           MenuItem(
-              text: 'Administrar Usuarios',
-              icon: Icons.home,
-              isActive: sidemenuProvider.currentPage == Flurorouter.dashboardRoute,
-              onPressed: () {
+            text: 'Dashboard',
+            icon: Icons.home_outlined,
+            isActive: sidemenuProvider.currentPage == Flurorouter.dashboardRoute,
+            onPressed: () {
                 navigateTo(Flurorouter.dashboardRoute);
+              }
+          ),
+          MenuItem(
+              text: 'Administrar Usuarios',
+              icon: Icons.person_outlined,
+              isActive: sidemenuProvider.currentPage == Flurorouter.gUsuariosRoute,
+              onPressed: () {
+                navigateTo(Flurorouter.gUsuariosRoute);
               }),
           MenuItem(
               text: 'Pagos Realizados',
