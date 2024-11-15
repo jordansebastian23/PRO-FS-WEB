@@ -14,7 +14,7 @@ class AdminHandlers {
       final authProvider = Provider.of<AuthProvider>(context!);
 
       return authProvider.authStatus == AuthStatus.authenticated
-          ? DashboardView()
+          ? CreateUserView()
           : LoginView();
     },
   );
@@ -24,7 +24,7 @@ class AdminHandlers {
       final authProvider = Provider.of<AuthProvider>(context!);
 
       return authProvider.authStatus == AuthStatus.authenticated
-          ? DashboardView()
+          ? CreateUserView()
           : RegisterView();
     },
   );
