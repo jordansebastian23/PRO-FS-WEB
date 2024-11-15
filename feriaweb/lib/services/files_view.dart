@@ -44,5 +44,18 @@ class FilesView {
       throw Exception('Failed to reject file: ${response.body}');
     }
   }
+
+  static Future<int> fetchFilesCount() async {
+    final url = Uri.parse('$baseUrl/list_files/');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final files = responseBody['files'] as List<dynamic>;
+      return files.length;
+    } else {
+      throw Exception('Failed to load files: ${response.body}');
+    }
+  }
   
 }

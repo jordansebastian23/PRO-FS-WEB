@@ -80,4 +80,23 @@ class EditAccountService {
       throw Exception('Failed to get users: ${response.body}');
     }
   }
+
+  static Future<Map<String, dynamic>> getUsersDashboard() async {
+    final url = Uri.parse('http://18.191.50.120/list_users/');
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final users = responseBody['users'] as List<dynamic>;
+      final disabledUsers = users.where((user) => user['disabled'] == true).toList();
+      final enabledUsers = users.length - disabledUsers.length;
+      return {
+        'totalUsers': users.length,
+        'enabledUsers': enabledUsers,
+        'disabledUsers': disabledUsers.length,
+      };
+    } else {
+      throw Exception('Failed to get users: ${response.body}');
+    }
+  }
 }

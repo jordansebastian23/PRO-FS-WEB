@@ -165,4 +165,30 @@ class TramiteService {
     }
   }
 
+  static Future<Map<String, dynamic>> fetchTramitesDashboard() async {
+    final url = Uri.parse('$baseUrl/list_tramites/');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+    final response = await http.get(
+      url,
+      headers: {
+        'X-Auth-Token': token,
+      }
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      final tramites = responseBody['tramites'] as List<dynamic>;
+      final pendingTramites = tramites.where((tramite) => tramite['estado'] == 'pending').toList();
+      final approvedTramites = tramites.where((tramite) => tramite['estado'] == 'approved').toList();
+      return {
+        'totalTramites': tramites.length,
+        'pendingTramites': pendingTramites.length,
+        'approvedTramites': approvedTramites.length,
+      };
+    } else {
+      throw Exception('Failed to load tramites: ${response.body}');
+    }
+  }
+
 }

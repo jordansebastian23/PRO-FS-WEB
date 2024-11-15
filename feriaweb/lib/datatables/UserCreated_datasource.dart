@@ -20,7 +20,7 @@ class UsersCreated extends DataTableSource {
       index: index,
       cells: [
         DataCell(Text(user['id'].toString())),
-        DataCell(Text(user['display_name'] ?? '')),
+        DataCell(Text(user['display_name']?.split(' ').take(2).join(' ') ?? '')),
         DataCell(Text(user['roles'] != null && user['roles'].isNotEmpty
             ? user['roles'].join(', ')
             : 'No role')),
