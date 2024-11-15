@@ -250,7 +250,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Historial de pagos',
+                                  Text('Historial de tramites',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold, fontSize: 24)),
                                   SizedBox(height: 10),
@@ -287,7 +287,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Crear Nueva Carga'),
+              title: Text('Crear Nuevo Tramite'),
               content: SingleChildScrollView(
                 child: Container(
                   width: 800,

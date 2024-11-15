@@ -117,60 +117,93 @@ class _NofityViewState extends State<NofityView> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      decoration: CustomInputs.createUser(
-                        colorBorder: Colors.black,
-                        hint: 'Search Users',
-                        label: 'Search Users',
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 10),
-                  DropdownButton<String>(
-                    value: _selectedRole,
-                    hint: Text("Select Role"),
-                    items: _roles.map((String role) {
-                      return DropdownMenuItem<String>(
-                        value: role,
-                        child: Text(role),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedRole = newValue;
-                      });
-                    },
-                  ),
-                ],
+  children: [
+    Expanded(
+      child: TextField(
+        controller: _searchController,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.grey[200],
+          contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          hintText: 'Search Users',
+          labelText: 'Search Users',
+          labelStyle: TextStyle(color: Colors.black54),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.black, width: 1),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.black, width: 1),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide(color: Colors.blue, width: 2),
+          ),
+        ),
+      ),
+    ),
+    SizedBox(width: 10),
+    IconButton(
+      icon: Icon(Icons.search, color: Colors.black),
+      onPressed: () {
+        // Add your search logic here
+      },
+    ),
+  ],
+),
+SizedBox(height: 20),
+// Users List to Select Multiple Users
+Expanded(
+  child: Card(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10),
+    ),
+    elevation: 3,
+    child: Padding(
+      padding: EdgeInsets.all(10),
+      child: ListView.builder(
+        itemCount: _filteredUsers.length,
+        itemBuilder: (context, index) {
+          final user = _filteredUsers[index];
+          return Container(
+            margin: EdgeInsets.symmetric(vertical: 5),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey[300]!),
+              borderRadius: BorderRadius.circular(10),
+              color: _selectedUserEmails.contains(user['email'])
+                  ? Colors.blue[50]
+                  : Colors.white,
+            ),
+            child: ListTile(
+              leading: Checkbox(
+                value: _selectedUserEmails.contains(user['email']),
+                onChanged: (bool? selected) {
+                  setState(() {
+                    if (selected == true) {
+                      _selectedUserEmails.add(user['email']);
+                    } else {
+                      _selectedUserEmails.remove(user['email']);
+                    }
+                  });
+                },
               ),
-              SizedBox(height: 20),
-              // Users List to Select Multiple Users
-              Expanded(
-                child: ListView.builder(
-                  itemCount: _filteredUsers.length,
-                  itemBuilder: (context, index) {
-                    final user = _filteredUsers[index];
-                    return ListTile(
-                      leading: Checkbox(
-                        value: _selectedUserEmails.contains(user['email']),
-                        onChanged: (bool? selected) {
-                          setState(() {
-                            if (selected == true) {
-                              _selectedUserEmails.add(user['email']);
-                            } else {
-                              _selectedUserEmails.remove(user['email']);
-                            }
-                          });
-                        },
-                      ),
-                      title: Text(user['email']),
-                    );
-                  },
+              title: Text(
+                user['email'],
+                style: TextStyle(
+                  fontWeight: FontWeight.w500,
+                  color: _selectedUserEmails.contains(user['email'])
+                      ? Colors.blue
+                      : Colors.black,
                 ),
               ),
+            ),
+          );
+        },
+      ),
+    ),
+  ),
+),
               SizedBox(height: 20),
               // Notification Type Selection
               Row(

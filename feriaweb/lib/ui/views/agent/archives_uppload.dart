@@ -71,7 +71,8 @@ class ArchivesUppload extends StatefulWidget {
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
                         label: Text('Estado',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                            )),
                     DataColumn(
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),

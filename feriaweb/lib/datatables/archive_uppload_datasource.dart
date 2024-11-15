@@ -33,7 +33,7 @@ class ArchiveUpploadDatasource extends DataTableSource {
           onPressed: () {
             _showDetailsDialog(context, file);
           },
-          child: Text('Ver detalles', style: TextStyle(color: Colors.teal)),
+          child: Text('Comparar', style: TextStyle(color: Colors.teal)),
         )),
       ],
     );
