@@ -8,33 +8,27 @@ import 'package:feriaweb/ui/views/register_view.dart';
 import 'package:provider/provider.dart';
 
 class AdminHandlers {
-
   static Handler login = Handler(
-    handlerFunc: ( context, params ) {
-
+    handlerFunc: (context, params) {
       final authProvider = Provider.of<AuthProvider>(context!);
 
-      if ( authProvider.authStatus == AuthStatus.notAuthenticated )
-        return LoginView();
-      else 
-        return CreateUserView();
-
-    }
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? CreateUserView()
+          : LoginView();
+    },
   );
 
   static Handler register = Handler(
-    handlerFunc: ( context, params ) {
-      
+    handlerFunc: (context, params) {
       final authProvider = Provider.of<AuthProvider>(context!);
-      
-      if ( authProvider.authStatus == AuthStatus.notAuthenticated )
-        return RegisterView();
-      else 
-        return CreateUserView();
-    }
+
+      return authProvider.authStatus == AuthStatus.authenticated
+          ? CreateUserView()
+          : RegisterView();
+    },
   );
 
-    static Handler aboutGroup = Handler(
+  static Handler aboutGroup = Handler(
     handlerFunc: ( context, params ) {
       
       final authProvider = Provider.of<AuthProvider>(context!);
@@ -48,4 +42,3 @@ class AdminHandlers {
 
 
 }
-

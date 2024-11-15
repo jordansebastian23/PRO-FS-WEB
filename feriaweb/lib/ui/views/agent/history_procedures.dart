@@ -1,6 +1,10 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/history_datasource.dart';
+import 'package:feriaweb/services/cargas_view.dart';
+import 'package:feriaweb/services/edit_account.dart';
+import 'package:feriaweb/services/tramite_view.dart';
 import 'package:feriaweb/ui/buttons/custom_icontext_button.dart';
+import 'package:feriaweb/ui/buttons/custom_multiselector_archives.dart';
 import 'package:feriaweb/ui/buttons/custom_outlined_button.dart';
 import 'package:feriaweb/ui/buttons/custom_radio_archives.dart';
 import 'package:feriaweb/ui/buttons/custom_radio_selectprocedure.dart';
@@ -25,25 +29,39 @@ class HistoryTramites extends StatefulWidget {
 
 class _HistoryTramitesState extends State<HistoryTramites> {
   int _selectedRadio = 1;
-  int _selectedRadio2 = 1;
+  List<int> _selectedFileValues = [];
+  int? selectedCargaId;
   DateTime? _selectedDate;
   DateTime? _selectedDateRetiro;
   User? selectedUser;
+  List<dynamic> allUsers = [];
+  List<dynamic> filteredUsers = [];
+  List<dynamic> allCargas = [];
+  List<dynamic> filteredCargas = [];
   final TextEditingController _searchController = TextEditingController();
-  final ValueNotifier<List<User>> _filteredUsersNotifier =
-      ValueNotifier<List<User>>([]);
+  late Future<List<dynamic>> _tramitesFuture;
 
-  List<User> allUsers = [
-    User(nombre: 'Usuario 1', correo: 'usuario1@example.com'),
-    User(nombre: 'Usuario 2', correo: 'usuario2@example.com'),
-    User(nombre: 'Usuario 3', correo: 'usuario3@example.com'),
-    User(nombre: 'Usuario 4', correo: 'usuario4@example.com'),
-  ];
+  String _getTipoTramiteBasedOnValue() {
+    switch (_selectedRadio) {
+      case 1:
+        return "FCL DIRECTO";
+      case 2:
+        return "FCL INDIRECTO";
+      case 3:
+        return "LCL DIRECTO";
+      case 4:
+        return "LCL INDIRECTO";
+      default:
+        return "FCL DIRECTO";
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _filteredUsersNotifier.value = allUsers;
+    _fetchCargas();
+    _fetchUsers();
+    _tramitesFuture = TramiteService.fetchTramites();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -54,16 +72,36 @@ class _HistoryTramitesState extends State<HistoryTramites> {
     super.dispose();
   }
 
+  _fetchCargas() async {
+    try {
+      allCargas = await CargasService.fetchCargas();
+      setState(() {
+        filteredCargas = allCargas;
+      });
+    } catch (e) {
+      print('Error fetching cargas: $e');
+    }
+  }
+
+  _fetchUsers() async {
+    try {
+      allUsers = await EditAccountService.getUsers();
+      setState(() {
+        filteredUsers = allUsers;
+      });
+    } catch (e) {
+      print('Error fetching users: $e');
+    }
+  }
+
   void _onSearchChanged() {
-    _filteredUsersNotifier.value = allUsers
-        .where((user) =>
-            user.nombre
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()) ||
-            user.correo
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()))
-        .toList();
+    setState(() {
+      filteredUsers = allUsers
+          .where((user) =>
+              user['display_name'].toLowerCase().contains(_searchController.text.toLowerCase()) ||
+              user['email'].toLowerCase().contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -94,10 +132,52 @@ class _HistoryTramitesState extends State<HistoryTramites> {
     }
   }
 
+  Future <void> _createTramite() async {
+    final selectedTipoTramite = _getTipoTramiteBasedOnValue();
+    try {
+      await TramiteService.createTramite(
+        tipo_tramite: selectedTipoTramite,
+        usuarioDestino: selectedUser!.correo,
+        cargaId: selectedCargaId!,
+        fileTypeIds: _selectedFileValues,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Tramite creado correctamente'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      setState(() {
+        _selectedRadio = 1;
+        _selectedDate = null;
+        _selectedDateRetiro = null;
+        selectedUser = null;
+        _selectedFileValues = [];
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al crear el tramite: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView(
+      padding: EdgeInsets.only(top: 60),
+      child: FutureBuilder<List<dynamic>>(
+        future: _tramitesFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final tramites = snapshot.data ?? [];
+      return ListView(
         physics: ClampingScrollPhysics(),
         children: [
           Align(
@@ -153,7 +233,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                         label: Text('Destinatario',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
-                        label: Text('Archivos subidos',
+                        label: Text('Fecha Termino',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                     DataColumn(
                         label: Text('Estado de tramite',
@@ -162,38 +242,53 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                         label: Text('Detalles',
                             style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: HistoryDatasource(context),
+                  source: HistoryDatasource(context, tramites),
                   header: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.contain,
-                        child: Text('Historial de Tramites',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 24)),
-                      ),
-                    ],
-                  ),
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            FittedBox(
+                              fit: BoxFit.contain,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Historial de tramites',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 24)),
+                                  SizedBox(height: 10),
+                                  //Fecha actual
+                                  Text(
+                                      'Fecha: ${_selectedDate != null ? _selectedDate!.toLocal().toString().split(' ')[0] : 'Seleccione una fecha'}',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold, fontSize: 14)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                   rowsPerPage: 5,
                 ),
               ),
             ),
           ),
         ],
-      ),
+      );
+    }
+  },
+    ),
     );
+
   }
 
-  void _newTramite(BuildContext context) {
-    String? amount;
+    
 
+  void _newTramite(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text('Crear Nueva Carga'),
+              title: Text('Crear Nuevo Tramite'),
               content: SingleChildScrollView(
                 child: Container(
                   width: 800,
@@ -258,6 +353,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                   value: 4,
                                   groupValue: _selectedRadio,
                                   onChanged: (int? value) {
+                                    
                                     setState(() {
                                       _selectedRadio = value!;
                                     });
@@ -314,10 +410,10 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.calendar_today),
+                                      icon: Icon(Icons.local_shipping),
                                       onPressed: () async {
-                                        await _selectDate(context);
-                                        setState(() {});
+                                        _showCargasSelectionDialog(
+                                            context, setState);
                                       },
                                     ),
                                     SizedBox(
@@ -326,10 +422,9 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                                         enabled: false,
                                         decoration: CustomInputs.createUser(
                                           hint: 'Seleccione una fecha',
-                                          label: _selectedDateRetiro != null
-                                              ? DateFormat('yyyy-MM-dd')
-                                                  .format(_selectedDateRetiro!)
-                                              : 'Selecciona una fecha',
+                                          label: selectedCargaId != null
+                                              ? selectedCargaId.toString()
+                                              : 'Selecciona una carga',
                                         ),
                                       ),
                                     ),
@@ -353,95 +448,94 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                           style: GoogleFonts.inter(
                               fontWeight: FontWeight.w400, fontSize: 16)),
                       SizedBox(height: 10),
-                      Row(
+                        Row(
                         children: [
                           SizedBox(width: 20),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomRadioSelectArchives(
-                                title: 'Boleta de pago.pdf',
-                                subTitle: 'Boleta de pago de la carga',
-                                value: 1,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de retiro.pdf',
-                                subTitle:
-                                    'Archivo que acredite el retiro de la carga',
-                                value: 2,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Carnet.pdf',
-                                subTitle: 'Cédula de identidad',
-                                value: 3,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomMultiSelectorArchives(
+                            title: 'Boleta de pago.pdf',
+                            subTitle: 'Boleta de pago de la carga',
+                            value: 1,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de retiro.pdf',
+                            subTitle: 'Archivo que acredite el retiro de la carga',
+                            value: 2,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Carnet.pdf',
+                            subTitle: 'Cédula de identidad',
+                            value: 3,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                          ],
                           ),
                           SizedBox(width: 20),
                           Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CustomRadioSelectArchives(
-                                title: 'Carnet de Conductor.pdf',
-                                subTitle: 'Cédula de identidad',
-                                value: 4,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de Información de Aduanas.pdf',
-                                subTitle: 'Archivo con Información de Aduanas',
-                                value: 5,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                              SizedBox(height: 10),
-                              CustomRadioSelectArchives(
-                                title: 'Archivo de Visado.pdf',
-                                subTitle: 'Archivo con visado de la carga',
-                                value: 6,
-                                groupValue: _selectedRadio2,
-                                onChanged: (int? value) {
-                                  setState(() {
-                                    _selectedRadio2 = value!;
-                                  });
-                                },
-                              ),
-                            ],
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomMultiSelectorArchives(
+                            title: 'Carnet de Conductor.pdf',
+                            subTitle: 'Cédula de identidad',
+                            value: 4,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de Información de Aduanas.pdf',
+                            subTitle: 'Archivo con Información de Aduanas',
+                            value: 5,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                            SizedBox(height: 10),
+                            CustomMultiSelectorArchives(
+                            title: 'Archivo de Visado.pdf',
+                            subTitle: 'Archivo con visado de la carga',
+                            value: 6,
+                            selectedValues: _selectedFileValues,
+                            onChanged: (List<int> values) {
+                              setState(() {
+                              _selectedFileValues = values;
+                              });
+                            },
+                            ),
+                          ],
                           ),
                         ],
-                      )
+                        )
                     ],
                   ),
                 ),
@@ -516,6 +610,7 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                             color: Colors.white,
                             fontSize: 16)),
                     onPressed: () {
+                      _createTramite();
                       Navigator.of(context).pop();
                     },
                   ),
@@ -566,60 +661,67 @@ class _HistoryTramitesState extends State<HistoryTramites> {
                       SizedBox(height: 10),
                       SizedBox(
                         height: 200,
-                        child: ValueListenableBuilder<List<User>>(
-                          valueListenable: _filteredUsersNotifier,
-                          builder: (context, filteredUsers, _) {
-                            return ListView(
-                              children: filteredUsers
-                                  .map((user) => ListTile(
-                                        title: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: selectedUser == user,
-                                              onChanged: (value) {
-                                                setStateDialog(() {
-                                                  selectedUser = user;
-                                                });
-                                                setState(() {
-                                                  selectedUser = user;
-                                                });
-                                                Navigator.of(context)
-                                                    .pop(); // Cerrar diálogo
-                                              },
-                                            ),
-                                            SizedBox(width: 10),
-                                            CircleAvatar(),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(user.nombre,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 14)),
-                                                Text(user.correo,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize: 14)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          setStateDialog(() {
-                                            selectedUser = user;
-                                          });
-                                          setState(() {
-                                            selectedUser = user;
-                                          });
-                                          Navigator.of(context)
-                                              .pop(); // Cerrar diálogo
-                                        },
-                                      ))
-                                  .toList(),
+                        child: ListView.builder(
+                          itemCount: filteredUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = filteredUsers[index];
+                            final nombre = user['display_name'] ?? 'Usuario desconocido';
+                            final correo = user['email'] ?? 'Sin correo';
+
+                            return ListTile(
+                              title: Row(
+                                children: [
+                                  Checkbox(
+                                    value: selectedUser?.correo == correo,
+                                    onChanged: (value) {
+                                      setStateDialog(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      setState(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      Navigator.of(context).pop(); // Cerrar diálogo
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  CircleAvatar(),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(nombre,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14)),
+                                      Text(correo,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              onTap: () {
+                                setStateDialog(() {
+                                  selectedUser = User(
+                                    nombre: nombre,
+                                    correo: correo,
+                                  );
+                                });
+                                setState(() {
+                                  selectedUser = User(
+                                    nombre: nombre,
+                                    correo: correo,
+                                  );
+                                });
+                                Navigator.of(context).pop(); // Cerrar diálogo
+                              },
                             );
                           },
                         ),
@@ -662,10 +764,137 @@ class _HistoryTramitesState extends State<HistoryTramites> {
       },
     );
   }
+    void _showCargasSelectionDialog(BuildContext context, StateSetter setState) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setStateDialog) {
+              return AlertDialog(
+                title: Text(
+                  'Busqueda por ID de Carga',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w400, fontSize: 13),
+                ),
+                content: SingleChildScrollView(
+                  child: Container(
+                    width: 400,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text('Buscar: ',
+                                style: GoogleFonts.inter(
+                                    fontWeight: FontWeight.w500, fontSize: 20)),
+                            SizedBox(width: 5),
+                            Expanded(
+                              child: TextField(
+                                controller: _searchController,
+                                decoration: CustomInputs.searchBar(
+                                  icon: Icons.search,
+                                  colorBorder: Colors.black,
+                                  hint: 'Ingresa el ID de la carga',
+                                  label: 'Buscar carga',
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          height: 200,
+                          child: ListView.builder(
+                            itemCount: filteredCargas.length,
+                            itemBuilder: (context, index) {
+                              final carga = filteredCargas[index];
+                              final id = carga['id'] ?? 'ID desconocido';
+                              final descripcion = carga['descripcion'] ?? 'Sin descripción';
+                              final fechaCreacion = carga['fecha_creacion'] ?? 'Sin fecha de creación';
+
+                              return ListTile(
+                                title: Row(
+                                  children: [
+                                    Checkbox(
+                                      value: selectedCargaId == id,
+                                      onChanged: (value) {
+                                        setStateDialog(() {
+                                          selectedCargaId = id;
+                                        });
+                                        setState(() {
+                                          selectedCargaId = id;
+                                        });
+                                        Navigator.of(context).pop(); // Cerrar diálogo
+                                      },
+                                    ),
+                                    SizedBox(width: 10),
+                                    CircleAvatar(),
+                                    SizedBox(width: 10),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('ID: $id',
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14)),
+                                        Text('Descripción: $descripcion',
+                                            style: GoogleFonts.inter(
+                                                fontWeight: FontWeight.w400,
+                                                fontSize: 14)),
+                                        Text('Fecha de Creación: ${DateFormat('dd/MM/yy').format(DateTime.parse(fechaCreacion))}',
+                                          style: GoogleFonts.inter(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 14)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: CustomColor.buttons,
+                    ),
+                    child: Text('Cancelar',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: CustomColor.buttons,
+                    ),
+                    child: Text('Confirmar',
+                        style: GoogleFonts.inter(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                            fontSize: 16)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    }
+  }
 
   BoxDecoration buildBoxDecoration() => BoxDecoration(
         color: Colors.white,
         border: Border.all(color: Colors.black, width: 1),
         borderRadius: BorderRadius.circular(20),
       );
-}

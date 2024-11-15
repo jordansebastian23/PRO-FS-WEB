@@ -1,56 +1,105 @@
-
-
 import 'package:feriaweb/router/router.dart';
-import 'package:feriaweb/services/local_storage.dart';
+import 'package:feriaweb/services/google_auth.dart';
+import 'package:feriaweb/services/local_login.dart';
 import 'package:feriaweb/services/navigation_service.dart';
+import 'package:feriaweb/services/session_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum AuthStatus {
   checking,
   authenticated,
-  notAuthenticated
+  notAuthenticated,
 }
 
 class AuthProvider extends ChangeNotifier {
-
   String? _token;
   AuthStatus authStatus = AuthStatus.checking;
 
-
   AuthProvider() {
-    this.isAuthenticated();
+    _checkAuthStatus();
   }
 
-
-  login( String email, String password ) {
-
-    // TODO: Petición HTTP
-    this._token = 'adjkfhadfyiu12y3hjasd.ajskhdaks.kjshdkjas';
-    LocalStorage.prefs.setString('token', this._token! );
-    
-    authStatus = AuthStatus.authenticated;
-    notifyListeners();
-    
-    NavigationService.replaceTo(Flurorouter.dashboardRoute);
-  }
-
-  Future<bool> isAuthenticated() async {
-
-    final token = LocalStorage.prefs.getString('token');
-
-    if( token == null ) {
+  Future<void> _checkAuthStatus() async {
+    final token = await SharedPreferences.getInstance().then((prefs) => prefs.getString('token'));
+    if (token == null) {
       authStatus = AuthStatus.notAuthenticated;
-      notifyListeners();
-      return false;
+    } else {
+      authStatus = AuthStatus.authenticated;
+    }
+    print('AuthStatus -> $authStatus');
+    notifyListeners();
+  }
+
+  Future<void> loginWithCredentials(String email, String password) async {
+    await LoginService.loginUser(
+      email: email,
+      password: password,
+      onSuccess: () async {
+        final token = await SharedPreferences.getInstance().then((prefs) => prefs.getString('token'));
+        if (token != null) {
+          await SessionManager.login(token);
+          _token = token;
+          authStatus = AuthStatus.authenticated;
+          notifyListeners();
+          print('Navigating to dashboard');
+          NavigationService.replaceTo(Flurorouter.dashboardRoute);
+        } else {
+          authStatus = AuthStatus.notAuthenticated; 
+          notifyListeners();
+
+        }
+      },
+      onError: (error) {
+        authStatus = AuthStatus.notAuthenticated;
+        notifyListeners();
+        NavigationService.showErrorSnackbar(error);  // Show the error message
+      },
+    );
+  }
+
+  Future<void> loginWithGoogle() async {
+    final googleAuth = AutenticacionGoogle();
+    await googleAuth.autentificaciongoogle(
+      onSuccess: () async {
+        final token = await SharedPreferences.getInstance().then((prefs) => prefs.getString('token'));
+        if (token != null) {
+          await SessionManager.login(token);
+          _token = token;
+          authStatus = AuthStatus.authenticated;
+          notifyListeners();
+          print('Navigating to dashboard');
+          NavigationService.replaceTo(Flurorouter.dashboardRoute);
+        }
+      },
+      onError: (error) {
+        authStatus = AuthStatus.notAuthenticated;
+        notifyListeners();
+        print("Login failed: $error");
+        NavigationService.showErrorSnackbar(error);  // Show the error message
+      },
+    );
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loginType = prefs.getString('loginType');
+
+    // Log out based on login type
+    if (loginType == 'google') {
+      final googleAuth = AutenticacionGoogle();
+      await googleAuth.logoutGoogleUser();
+    } else if (loginType == 'credentials') {
+      await LoginService.logoutCredentialsUser();
     }
 
-    // TODO: ir al backend y comprobar si el JWT es válido
-    
-    await Future.delayed(Duration(milliseconds: 1000 ));
-    authStatus = AuthStatus.authenticated;
+    // Clear session in SessionManager
+    await SessionManager.logout();
+
+    // Update auth status
+    authStatus = AuthStatus.notAuthenticated;
+    _token = null;
     notifyListeners();
-    return true;
+    NavigationService.replaceTo(Flurorouter.loginRoute);
   }
-
-
 }

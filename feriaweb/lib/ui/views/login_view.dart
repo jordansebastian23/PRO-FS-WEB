@@ -2,6 +2,7 @@ import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/login_form_provider.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:feriaweb/services/navigation_service.dart';
 import 'package:feriaweb/ui/layouts/auth/widgets/custom_imputs.dart';
 import 'package:flutter/material.dart';
 
@@ -13,12 +14,17 @@ import 'package:feriaweb/ui/buttons/link_text.dart';
 import 'package:provider/provider.dart';
 
 class LoginView extends StatelessWidget {
-  
+  void navigateTo(String routeName) {
+    NavigationService.navigateTo(routeName);
+  }
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
 
-    final authProvider = Provider.of<AuthProvider>(context);
-    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     return ChangeNotifierProvider(
       create: ( _ ) => LoginFormProvider(),
       child: Builder(builder: ( context ){
@@ -42,9 +48,9 @@ class LoginView extends StatelessWidget {
                   TextFormField(
                     validator: ( value ) {
                       if( !EmailValidator.validate(value ?? '') ) return 'Email no válido';
-
                       return null;
                     },
+                    controller: _emailController,
                     onChanged: ( value ) => loginFormProvider.email = value,
                     style: TextStyle( color: Colors.white ),
                     cursorColor: CustomColor.buttons,
@@ -63,9 +69,9 @@ class LoginView extends StatelessWidget {
                     validator: ( value ) {
                       if ( value == null || value.isEmpty ) return 'Ingrese su contraseña';
                       if ( value.length < 6 ) return 'La contraseña debe de ser de 6 caracteres';
-
                       return null; // Válido
                     },
+                    controller: _passwordController,
                     obscureText: true,
                     cursorColor: CustomColor.buttons,
                     style: TextStyle( color: Colors.white ),
@@ -81,10 +87,8 @@ class LoginView extends StatelessWidget {
                     isFilled: true,
                     color: CustomColor.buttons,
 
-                    onPressed: () {
-                      final isValid = loginFormProvider.validateForm();
-                      if ( isValid )
-                        authProvider.login(loginFormProvider.email, loginFormProvider.password);
+                    onPressed: () async {
+                      await authProvider.loginWithCredentials(_emailController.text, _passwordController.text);
                     }, 
                     text: 'Ingresar',
                   ),
@@ -126,7 +130,9 @@ class LoginView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(30),
                               ),
                             ),
-                            onPressed: () {},
+                            onPressed: () async {
+                              await authProvider.loginWithGoogle();
+                            },
                             icon: Image.asset(
                               'assets/icons/google_icon1.png',
                               height: 20.0,

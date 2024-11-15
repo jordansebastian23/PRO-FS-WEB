@@ -1,4 +1,5 @@
 import 'package:feriaweb/constants/colors.dart';
+import 'package:feriaweb/providers/auth_provider.dart';
 import 'package:feriaweb/providers/sidemenu_provider.dart';
 import 'package:feriaweb/router/router.dart';
 import 'package:feriaweb/services/navigation_service.dart';
@@ -87,7 +88,10 @@ class SideBar extends StatelessWidget {
               icon: Icons.logout_outlined,
               isActive: false,
               onPressed: () {
-                navigateTo(Flurorouter.pRealizadosRoute);
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                authProvider.logout().then((_) {
+                  navigateTo(Flurorouter.loginRoute);
+                });
               }),
         ],
       ),

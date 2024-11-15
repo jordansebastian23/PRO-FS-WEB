@@ -1,11 +1,12 @@
 import 'package:feriaweb/constants/colors.dart';
 import 'package:feriaweb/datatables/carga_datasource.dart';
+import 'package:feriaweb/services/cargas_view.dart';
+import 'package:feriaweb/services/edit_account.dart';
+import 'package:feriaweb/services/pagos_view.dart';
 import 'package:feriaweb/ui/buttons/custom_icontext_button.dart';
-import 'package:feriaweb/ui/cards/custom_card_notify.dart';
 import 'package:feriaweb/ui/inputs/custom_inputs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class User {
   final String nombre;
@@ -22,24 +23,25 @@ class CargaView extends StatefulWidget {
 }
 
 class _CargaViewState extends State<CargaView> {
+  
   DateTime? _selectedDate;
-  DateTime? _selectedDateRetiro;
   User? selectedUser;
+  int? selectedPagoId; // Revisar
+  String? fechaRetiro;
+  String? descripcion;
+  String? localizacion;
+  List<dynamic> allUsers = [];
+  List<dynamic> filteredUsers = [];
+  List<dynamic> allPagos = [];
   final TextEditingController _searchController = TextEditingController();
-  final ValueNotifier<List<User>> _filteredUsersNotifier =
-      ValueNotifier<List<User>>([]);
-
-  List<User> allUsers = [
-    User(nombre: 'Usuario 1', correo: 'usuario1@example.com'),
-    User(nombre: 'Usuario 2', correo: 'usuario2@example.com'),
-    User(nombre: 'Usuario 3', correo: 'usuario3@example.com'),
-    User(nombre: 'Usuario 4', correo: 'usuario4@example.com'),
-  ];
+  late Future<List<dynamic>> _cargasFuture;
 
   @override
   void initState() {
     super.initState();
-    _filteredUsersNotifier.value = allUsers;
+    _fetchUsers();
+    _fetchPagos();
+    _cargasFuture = CargasService.fetchCargas();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -50,18 +52,35 @@ class _CargaViewState extends State<CargaView> {
     super.dispose();
   }
 
-  void _onSearchChanged() {
-    _filteredUsersNotifier.value = allUsers
-        .where((user) =>
-            user.nombre
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()) ||
-            user.correo
-                .toLowerCase()
-                .contains(_searchController.text.toLowerCase()))
-        .toList();
+  Future<void> _fetchUsers() async {
+    try {
+      allUsers = await EditAccountService.getUsers();
+      setState(() {
+        filteredUsers = allUsers;
+      });
+    } catch (e) {
+      print("Error fetching users: $e");
+    }
   }
 
+  Future<void> _fetchPagos() async {
+    try {
+      allPagos = await PagosService.fetchPagos();
+      setState(() {});
+    } catch (e) {
+      print("Error fetching pagos: $e");
+    }
+  }
+
+  void _onSearchChanged() {
+    setState(() {
+      filteredUsers = allUsers
+          .where((user) =>
+              user['display_name'].toLowerCase().contains(_searchController.text.toLowerCase()) ||
+              user['email'].toLowerCase().contains(_searchController.text.toLowerCase()))
+          .toList();
+    });
+  }
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -73,10 +92,8 @@ class _CargaViewState extends State<CargaView> {
         return Theme(
           data: ThemeData.light().copyWith(
             primaryColor: CustomColor.buttons, // Cambia el color primario
-            colorScheme: ColorScheme.light(
-                primary: CustomColor.buttons), // Cambia el esquema de color
-            buttonTheme: ButtonThemeData(
-                textTheme: ButtonTextTheme.primary), // Cambia el tema del botón
+            colorScheme: ColorScheme.light(primary: CustomColor.buttons), // Cambia el esquema de color
+            buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary), // Cambia el tema del botón
           ),
           child: child!,
         );
@@ -85,15 +102,56 @@ class _CargaViewState extends State<CargaView> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _selectedDateRetiro = picked;
       });
+    }
+  }
+
+  Future<void> _createCargo() async {
+    if (selectedUser == null || selectedPagoId == null || descripcion == null || localizacion == null || localizacion!.isEmpty || descripcion!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Debes seleccionar un usuario, pago, descripción y localización.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final response = await CargasService.createCarga(
+        email: selectedUser!.correo,
+        pagoid: selectedPagoId!,
+        descripcion: descripcion!,
+        localizacion: localizacion!,
+        fechaRetiro: fechaRetiro,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(response['message'])),
+      );
+      setState(() {
+        _cargasFuture = CargasService.fetchCargas();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to create pago: $e')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: ListView(
+      padding: EdgeInsets.only(top: 60),
+      child: FutureBuilder<List<dynamic>>(
+        future: _cargasFuture,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final cargas = snapshot.data ?? [];
+        return ListView(
         physics: ClampingScrollPhysics(),
         children: [
           Align(
@@ -120,6 +178,7 @@ class _CargaViewState extends State<CargaView> {
                             onPressed: () {
                               setState(() {
                                 _selectedDate = null;
+                                fechaRetiro = null;
                               });
                             }),
                         CustomIcontextButton(
@@ -134,26 +193,32 @@ class _CargaViewState extends State<CargaView> {
                   ],
                   columnSpacing: 1,
                   columns: [
-                    DataColumn(
-                        label: Text('ID Carga',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Fecha Creacion',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Fecha Retiro',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Monto Relacionado',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Estado',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
-                    DataColumn(
-                        label: Text('Detalles',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('ID Carga',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Usuario',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Descripción',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Localización',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Fecha de Creación',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Fecha de Retiro',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Estado',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
+                          DataColumn(
+                              label: Text('Detalles',
+                                  style: TextStyle(fontWeight: FontWeight.bold))),
                   ],
-                  source: CargaDatasource(context),
+                  source: CargaDatasource(context, cargas),
                   header: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -162,7 +227,7 @@ class _CargaViewState extends State<CargaView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Gestionar cargas',
+                            Text('Historial de cargas',
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 24)),
                             SizedBox(height: 10),
@@ -182,13 +247,14 @@ class _CargaViewState extends State<CargaView> {
             ),
           ),
         ],
+      );
+          }
+        },
       ),
     );
   }
 
   void _newCarga(BuildContext context) {
-    String? amount;
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -198,170 +264,130 @@ class _CargaViewState extends State<CargaView> {
               title: Text('Crear Nueva Carga'),
               content: SingleChildScrollView(
                 child: Container(
-                  width: 800,
-                  child: Row(
+                  width: 700,
+                  child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: 400,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Text('Seleccionar Usuario: ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione un usuario',
-                                      label: selectedUser != null
-                                          ? selectedUser!.nombre
-                                          : 'Selecciona un usuario',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.search),
-                                  onPressed: () async {
-                                    _showUserSelectionDialog(context, setState);
-                                  },
-                                ),
-                              ],
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Seleccionar Usuario: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 8),
+                          SizedBox(
+                            width: 200,
+                            child: TextField(
+                              enabled: false,
+                              decoration: CustomInputs.createUser(
+                                hint: 'Seleccione un usuario',
+                                label: selectedUser != null
+                                    ? selectedUser!.nombre
+                                    : 'Selecciona un usuario',
+                              ),
                             ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Text('Fecha de creacion: ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione una fecha',
-                                      label: _selectedDateRetiro != null
-                                          ? DateFormat('yyyy-MM-dd')
-                                              .format(_selectedDateRetiro!)
-                                          : 'Selecciona una fecha',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.calendar_today),
-                                  onPressed: () async {
-                                    await _selectDate(context);
-                                    setState(() {});
-                                  },
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text('Fecha de retiro:   ',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
-                                SizedBox(width: 8),
-                                Spacer(),
-                                SizedBox(
-                                  width: 200,
-                                  child: TextField(
-                                    enabled: false,
-                                    decoration: CustomInputs.createUser(
-                                      hint: 'Seleccione una fecha',
-                                      label: _selectedDateRetiro != null
-                                          ? DateFormat('yyyy-MM-dd')
-                                              .format(_selectedDateRetiro!)
-                                          : 'Selecciona una fecha',
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.calendar_today),
-                                  onPressed: () async {
-                                    await _selectDate(context);
-                                    setState(() {});
-                                  },
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: () async {
+                              _showUserSelectionDialog(context, setState);
+                            },
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 40),
-                      Container(
-                        width: 10,
-                        height: 100,
-                        child: VerticalDivider(
-                          color: Colors.black,
-                          thickness: 2,
-                          indent: 20,
-                          endIndent: 20,
-                        ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text('Seleccionar Pago: ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          SizedBox(width: 8),
+                          DropdownButton<int>(
+                            value: selectedPagoId,
+                            hint: Text('Seleccionar Pago'),
+                            onChanged: (int? newValue) {
+                              setState(() {
+                                selectedPagoId = newValue;
+                              });
+                            },
+                            items: allPagos.map<DropdownMenuItem<int>>((pago) {
+                              return DropdownMenuItem<int>(
+                                value: pago['id'],
+                                child: Text('Pago ID: ${pago['id']} - Monto: ${pago['monto']}'),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
-                      SizedBox(width: 5),
+                      SizedBox(height: 10),
+                      Text('Descripción',
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400, fontSize: 13)),
+                      SizedBox(height: 8),
                       SizedBox(
-                        width: 300,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Ingresa monto [\$CLP]',
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400, fontSize: 13),
-                            ),
-                            SizedBox(height: 8),
-                            SizedBox(
-                              width: 200,
-                              height: 43,
-                              child: TextFormField(
-                                decoration: CustomInputs.createUser(
-                                  colorBorder: Colors.black,
-                                  hint: 'Ingresa el monto',
-                                  label: 'Monto',
-                                ),
-                                keyboardType: TextInputType.number,
-                                onChanged: (value) {
-                                  amount = value;
-                                },
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Ingrese descripción',
-                              style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w400, fontSize: 13),
-                            ),
-                            SizedBox(
-                              width: 200,
-                              height: 100,
-                              child: TextFormField(
-                                decoration: CustomInputs.createUser(
-                                  colorBorder: Colors.black,
-                                  hint: 'Ingresa la descripción',
-                                  label: 'Descripción',
-                                ),
-                                keyboardType: TextInputType.multiline,
-                                maxLines: 5,
-                              ),
-                            )
-                          ],
+                        width: 400,
+                        height: 43,
+                        child: TextFormField(
+                          decoration: CustomInputs.createUser(
+                            colorBorder: Colors.black,
+                            hint: 'Ingresa la descripción',
+                            label: 'Descripción',
+                          ),
+                          onChanged: (value) {
+                            descripcion = value;
+                          },
                         ),
-                      )
+                      ),
+                      SizedBox(height: 10),
+                      Text('Localización',
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400, fontSize: 13)),
+                      SizedBox(height: 8),
+                      SizedBox(
+                        width: 400,
+                        height: 43,
+                        child: TextFormField(
+                          decoration: CustomInputs.createUser(
+                            colorBorder: Colors.black,
+                            hint: 'Ingresa la localización',
+                            label: 'Localización',
+                          ),
+                          onChanged: (value) {
+                            localizacion = value;
+                          },
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text('Fecha de Retiro (opcional)',
+                          style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w400, fontSize: 13)),
+                      SizedBox(height: 8),
+                      SizedBox(
+                        width: 200,
+                        height: 43,
+                        child: TextFormField(
+                          decoration: CustomInputs.createUser(
+                            colorBorder: Colors.black,
+                            hint: 'Ingresa la fecha de retiro',
+                            label: 'Fecha de Retiro',
+                          ),
+                          onTap: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2101),
+                            );
+                            if (pickedDate != null) {
+                              setState(() {
+                                fechaRetiro = pickedDate.toLocal().toString().split(' ')[0];
+                              });
+                            }
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -384,13 +410,14 @@ class _CargaViewState extends State<CargaView> {
                   style: TextButton.styleFrom(
                     backgroundColor: CustomColor.buttons,
                   ),
-                  child: Text('Crear Carga',
+                  child: Text('Confirmar',
                       style: GoogleFonts.inter(
                           fontWeight: FontWeight.w600,
                           color: Colors.white,
                           fontSize: 16)),
                   onPressed: () {
-                    _showConfirmCreationCarga(context);
+                    _createCargo();
+                    Navigator.of(context).pop();
                   },
                 ),
               ],
@@ -484,61 +511,55 @@ class _CargaViewState extends State<CargaView> {
                       SizedBox(height: 10),
                       SizedBox(
                         height: 200,
-                        child: ValueListenableBuilder<List<User>>(
-                          valueListenable: _filteredUsersNotifier,
-                          builder: (context, filteredUsers, _) {
-                            return ListView(
-                              children: filteredUsers
-                                  .map((user) => ListTile(
-                                        title: Row(
-                                          children: [
-                                            Checkbox(
-                                              value: selectedUser == user,
-                                              onChanged: (value) {
-                                                setStateDialog(() {
-                                                  selectedUser = user;
-                                                });
-                                                setState(() {
-                                                  selectedUser = user;
-                                                });
-                                                Navigator.of(context)
-                                                    .pop(); // Cerrar diálogo
-                                              },
-                                            ),
-                                            SizedBox(width: 10),
-                                            CircleAvatar(),
-                                            SizedBox(width: 10),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(user.nombre,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 14)),
-                                                Text(user.correo,
-                                                    style: GoogleFonts.inter(
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        fontSize: 14)),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                        onTap: () {
-                                          setStateDialog(() {
-                                            selectedUser = user;
-                                          });
-                                          setState(() {
-                                            selectedUser = user;
-                                          });
-                                          Navigator.of(context)
-                                              .pop(); // Cerrar diálogo
-                                        },
-                                      ))
-                                  .toList(),
+                        child: ListView.builder(
+                          itemCount: filteredUsers.length,
+                          itemBuilder: (context, index) {
+                            final user = filteredUsers[index];
+                            final nombre = user['display_name'] ?? 'Usuario desconocido';
+                            final correo = user['email'] ?? 'Sin correo';
+
+                            return ListTile(
+                              title: Row(
+                                children: [
+                                  Checkbox(
+                                    value: selectedUser?.correo == correo,
+                                    onChanged: (value) {
+                                      setStateDialog(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      setState(() {
+                                        selectedUser = User(
+                                          nombre: nombre,
+                                          correo: correo,
+                                        );
+                                      });
+                                      Navigator.of(context).pop(); // Cerrar diálogo
+                                    },
+                                  ),
+                                  SizedBox(width: 10),
+                                  CircleAvatar(),
+                                  SizedBox(width: 10),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(nombre,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14)),
+                                      Text(correo,
+                                          style: GoogleFonts.inter(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 14)),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             );
+                            
+                          
                           },
                         ),
                       ),
