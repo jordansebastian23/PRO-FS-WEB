@@ -1,4 +1,5 @@
 import 'package:feriaweb/providers/auth_provider.dart';
+import 'package:feriaweb/ui/views/about_group.dart';
 import 'package:feriaweb/ui/views/agent/user_view.dart';
 import 'package:fluro/fluro.dart';
 
@@ -28,6 +29,18 @@ class AdminHandlers {
       
       if ( authProvider.authStatus == AuthStatus.notAuthenticated )
         return RegisterView();
+      else 
+        return CreateUserView();
+    }
+  );
+
+    static Handler aboutGroup = Handler(
+    handlerFunc: ( context, params ) {
+      
+      final authProvider = Provider.of<AuthProvider>(context!);
+      
+      if ( authProvider.authStatus == AuthStatus.notAuthenticated )
+        return AboutGroup();
       else 
         return CreateUserView();
     }
